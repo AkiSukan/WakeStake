@@ -353,11 +353,12 @@
     closeDisarmBtn: document.getElementById('closeDisarmBtn'),
     modeQrTab: document.getElementById('modeQrTab'),
     modePhotoTab: document.getElementById('modePhotoTab'),
+    qrCaptureCanvas: document.getElementById('qrCaptureCanvas'),
     qrPlaceholderText: document.getElementById('qrPlaceholderText'),
     qrScannerStatus: document.getElementById('qrScannerStatus'),
     qrVerifyPanel: document.getElementById('qrVerifyPanel'),
     photoVerifyPanel: document.getElementById('photoVerifyPanel'),
-    simulateQrScanSuccessBtn: document.getElementById('simulateQrScanSuccessBtn'),
+    demoQrScanSuccessBtn: document.getElementById('demoQrScanSuccessBtn'),
     toggleWebcamBtn: document.getElementById('toggleWebcamBtn'),
     webcamVideo: document.getElementById('webcamVideo'),
     viewfinderPlaceholder: document.getElementById('viewfinderPlaceholder'),
@@ -391,6 +392,9 @@
   let graceInterval = null;
   let emergencyClockInterval = null;
   let webcamStream = null;
+  let qrScanTimer = null;
+  let qrScanner = null;
+  let cameraRequestId = 0;
 
   // =========================================================================
   // 4. UI INITIALIZATION & SYNC
@@ -575,7 +579,6 @@
     if (DOM.modeQrTab) DOM.modeQrTab.textContent = `📷 ${location} QR Terminal`;
     if (DOM.qrPlaceholderText) DOM.qrPlaceholderText.textContent = `Align ${location} QR Code Inside Box`;
     if (DOM.qrScannerStatus) DOM.qrScannerStatus.textContent = `Ready to scan at ${location}`;
-    if (DOM.simulateQrScanSuccessBtn) DOM.simulateQrScanSuccessBtn.textContent = `⚡ Scan ${location} QR Terminal Now (Verify & Disarm)`;
   }
 
   function getQrDeadlineMinutes() {
@@ -1088,39 +1091,154 @@
     DOM.qrVerifyPanel.classList.remove('active');
   }
 
-  // Physical Webcam integration with fallback
-  function toggleWebcam() {
+  async function createQrScanner() {
+    if (typeof window.BarcodeDetector?.getSupportedFormats === 'function') {
+      try {
+        const formats = await window.BarcodeDetector.getSupportedFormats();
+        if (formats.includes('qr_code')) {
+          return {
+            kind: 'native',
+            detector: new window.BarcodeDetector({ formats: ['qr_code'] })
+          };
+        }
+      } catch (error) {
+        console.info('Native QR detection is unavailable, trying the JavaScript decoder.', error);
+      }
+    }
+
+    if (typeof window.jsQR === 'function') return { kind: 'jsqr' };
+    throw new Error('QR_DECODER_UNAVAILABLE');
+  }
+
+  // Camera frames are decoded locally and never uploaded.
+  async function toggleWebcam() {
     if (webcamStream) {
       stopWebcamStream();
-      DOM.toggleWebcamBtn.textContent = 'Enable Physical Webcam';
-      DOM.viewfinderPlaceholder.classList.remove('hidden');
-      DOM.webcamVideo.classList.add('hidden');
-    } else {
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-          .then(stream => {
-            webcamStream = stream;
-            DOM.webcamVideo.srcObject = stream;
-            DOM.webcamVideo.classList.remove('hidden');
-            DOM.viewfinderPlaceholder.classList.add('hidden');
-            DOM.toggleWebcamBtn.textContent = 'Disable Physical Webcam';
-            showToast(`Webcam active! Align camera to the ${getQrLocationLabel()} QR station`, 'toast-success');
-          })
-          .catch(err => {
-            console.warn('Webcam access error', err);
-            showToast('Webcam permission not granted. Use instant simulator button.', 'toast-warning');
-          });
-      } else {
-        showToast('Webcam API not supported in this browser environment', 'toast-warning');
+      if (DOM.qrScannerStatus) DOM.qrScannerStatus.textContent = 'QR scanner stopped.';
+      return;
+    }
+
+    if (!window.isSecureContext) {
+      if (DOM.qrScannerStatus) DOM.qrScannerStatus.textContent = 'Camera access needs HTTPS or localhost.';
+      showToast('Open WakeStake over HTTPS to use the camera on your phone.', 'toast-warning');
+      return;
+    }
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      if (DOM.qrScannerStatus) DOM.qrScannerStatus.textContent = 'Camera access is not available in this browser.';
+      showToast('This browser cannot open a camera for QR scanning.', 'toast-warning');
+      return;
+    }
+
+    DOM.toggleWebcamBtn.disabled = true;
+    const requestId = ++cameraRequestId;
+    if (DOM.qrScannerStatus) DOM.qrScannerStatus.textContent = 'Preparing QR scanner…';
+    try {
+      const scanner = await createQrScanner();
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: false,
+        video: { facingMode: { ideal: 'environment' } }
+      });
+      if (requestId !== cameraRequestId || !DOM.disarmModal.classList.contains('active')) {
+        stream.getTracks().forEach(track => track.stop());
+        return;
       }
+      webcamStream = stream;
+      qrScanner = scanner;
+      DOM.webcamVideo.srcObject = stream;
+      DOM.webcamVideo.classList.remove('hidden');
+      DOM.viewfinderPlaceholder.classList.add('hidden');
+      await DOM.webcamVideo.play();
+      DOM.toggleWebcamBtn.textContent = 'Stop QR Scanner';
+      if (DOM.qrScannerStatus) DOM.qrScannerStatus.textContent = `Camera on. Point it at the ${getQrLocationLabel()} QR code.`;
+      startQrScanLoop();
+    } catch (error) {
+      if (requestId !== cameraRequestId) return;
+      stopWebcamStream();
+      console.warn('QR scanner could not start:', error);
+      let message = 'Camera permission was denied or the camera is unavailable.';
+      if (error.message === 'QR_DECODER_UNAVAILABLE') message = 'QR decoding is unavailable. Check your internet connection and reload.';
+      if (DOM.qrScannerStatus) DOM.qrScannerStatus.textContent = message;
+      showToast(message, 'toast-warning');
+    } finally {
+      DOM.toggleWebcamBtn.disabled = false;
     }
   }
 
+  function startQrScanLoop() {
+    const video = DOM.webcamVideo;
+    const canvas = DOM.qrCaptureCanvas;
+    const context = canvas.getContext('2d', { willReadFrequently: true });
+
+    const scanFrame = async () => {
+      if (!webcamStream || !qrScanner) return;
+
+      if (document.hidden || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) {
+        qrScanTimer = setTimeout(scanFrame, 250);
+        return;
+      }
+
+      try {
+        let codeFound = false;
+        if (qrScanner.kind === 'native') {
+          const codes = await qrScanner.detector.detect(video);
+          codeFound = codes.length > 0;
+        } else if (video.videoWidth && video.videoHeight) {
+          const scale = Math.min(1, 640 / video.videoWidth);
+          const width = Math.max(1, Math.round(video.videoWidth * scale));
+          const height = Math.max(1, Math.round(video.videoHeight * scale));
+          if (canvas.width !== width || canvas.height !== height) {
+            canvas.width = width;
+            canvas.height = height;
+          }
+          context.drawImage(video, 0, 0, width, height);
+          const frame = context.getImageData(0, 0, width, height);
+          codeFound = Boolean(window.jsQR(frame.data, width, height, { inversionAttempts: 'dontInvert' }));
+        }
+
+        if (!webcamStream || !qrScanner) return;
+
+        if (codeFound) {
+          if (DOM.alarmModal.classList.contains('active')) {
+            if (DOM.qrScannerStatus) DOM.qrScannerStatus.textContent = `${getQrLocationLabel()} QR detected. Alarm stopped.`;
+            handleDisarmSuccess(`${getQrLocationLabel()} QR Code`);
+          } else {
+            stopWebcamStream();
+            if (DOM.qrScannerStatus) DOM.qrScannerStatus.textContent = 'QR code found, but there is no active alarm to disarm.';
+          }
+          return;
+        }
+      } catch (error) {
+        if (!webcamStream || !qrScanner) return;
+        if (qrScanner.kind === 'native' && typeof window.jsQR === 'function') {
+          qrScanner = { kind: 'jsqr' };
+        } else {
+          console.debug('QR scan frame could not be decoded.', error);
+        }
+      }
+
+      qrScanTimer = setTimeout(scanFrame, 250);
+    };
+
+    scanFrame();
+  }
+
   function stopWebcamStream() {
+    cameraRequestId++;
+    clearTimeout(qrScanTimer);
+    qrScanTimer = null;
+    qrScanner = null;
     if (webcamStream) {
       webcamStream.getTracks().forEach(track => track.stop());
       webcamStream = null;
     }
+    if (DOM.webcamVideo) {
+      DOM.webcamVideo.pause();
+      DOM.webcamVideo.srcObject = null;
+      DOM.webcamVideo.classList.add('hidden');
+    }
+    if (DOM.viewfinderPlaceholder) DOM.viewfinderPlaceholder.classList.remove('hidden');
+    if (DOM.toggleWebcamBtn) DOM.toggleWebcamBtn.textContent = 'Start QR Scanner';
   }
 
   // Celebration Confetti Animation
@@ -1515,7 +1633,7 @@
     DOM.modeQrTab.addEventListener('click', switchToQrTab);
     DOM.modePhotoTab.addEventListener('click', switchToPhotoTab);
     DOM.closeDisarmBtn.addEventListener('click', closeDisarmModal);
-    DOM.simulateQrScanSuccessBtn.addEventListener('click', () => handleDisarmSuccess(`${getQrLocationLabel()} QR Code`));
+    DOM.demoQrScanSuccessBtn.addEventListener('click', () => handleDisarmSuccess(`${getQrLocationLabel()} QR Code`));
     DOM.toggleWebcamBtn.addEventListener('click', toggleWebcam);
     DOM.runAiPhotoVerificationBtn.addEventListener('click', runPhotoAiAnalysis);
 

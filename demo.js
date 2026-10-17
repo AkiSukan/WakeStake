@@ -1,5 +1,5 @@
 /**
- * WakeStake — Automated 40-Second Hackathon Demo Script
+ * WakeStake — Automated 1-Minute Hackathon Demo Script
  * =====================================================
  * Injects a floating control panel; runs a full guided tour
  * of every key feature with timed sequences & annotations.
@@ -38,7 +38,7 @@
     [3500, 'Scan before the deadline',            demoSkipToCelebration],
     [3000, 'Finish the guided tour',              demoComplete],
   ];
-  const DEMO_DELAY_SCALE = 0.84;
+  const DEMO_DELAY_SCALE = 1.26;
 
   let stepIndex = 0;
   let timeoutHandle = null;
@@ -598,9 +598,10 @@
 
   function demoSkipToCelebration() {
     // Trigger QR scan success
-    const scanBtn = document.getElementById('simulateQrScanSuccessBtn');
+    const scanBtn = document.getElementById('demoQrScanSuccessBtn');
+    const scannerButton = document.getElementById('toggleWebcamBtn');
     if (scanBtn && document.getElementById('disarmModal').classList.contains('active')) {
-      spotlight(scanBtn, `Confirm a scan at the ${demoGetQrLocationLabel()} station. Successful verification protects the stake.`, 'top');
+      spotlight(scannerButton, `The demo simulates a successful scan at ${demoGetQrLocationLabel()}. In use, the camera detects the QR automatically.`, 'top');
       setTimeout(() => scanBtn.click(), 700);
     } else {
       // disarm modal may not be open; force success directly
@@ -641,7 +642,7 @@
     updatePanelLabel(`
       <strong style="color:#00E599">🎉 Demo Complete!</strong><br>
       <span style="color:#718096;font-size:0.72rem;">
-        40-second guided tour finished. WakeStake: set a target, choose a station, and verify before the deadline.
+        1-minute guided tour finished. WakeStake: set a target, choose a station, and verify before the deadline.
       </span>
     `);
     updateProgressBar(100);
@@ -705,7 +706,7 @@
       '%c⚡ WakeStake Demo Mode Active',
       'background:#FF2B4E;color:#fff;font-size:14px;font-weight:bold;padding:4px 12px;border-radius:6px'
     );
-    console.log('Click ▶ Start Demo in the floating panel to begin the 40-second tour.');
+    console.log('Click ▶ Start Demo in the floating panel to begin the 1-minute tour.');
   }
 
   if (document.readyState === 'loading') {

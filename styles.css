@@ -2944,6 +2944,20 @@ body.mode-mobile-frame #mainContainer {
   color: var(--emerald-safe);
 }
 
+.qr-scanner-status {
+  min-height: 1.5em;
+  margin-top: 10px;
+  color: #8C9BB4;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+body.theme-light .qr-scanner-status {
+  color: #526176;
+}
+
 .scanner-btn-group {
   margin-top: 14px;
   display: flex;

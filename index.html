@@ -983,7 +983,7 @@
     <div class="disarm-card clean-card">
       <div class="disarm-header">
         <div>
-          <h3 class="disarm-title">Verify You Are At Your Kettle / Sink</h3>
+          <h3 class="disarm-title">Scan the QR at Your Selected Location</h3>
           <p class="disarm-sub">Complete verification to safely protect your <strong
               id="verifyStakeLabel">£10.00</strong> stake.</p>
         </div>
@@ -1012,17 +1012,14 @@
           <div class="viewfinder-placeholder" id="viewfinderPlaceholder">
             <div class="placeholder-icon">📷</div>
             <div class="placeholder-text" id="qrPlaceholderText">Align Home / Kitchen QR Code Inside Box</div>
-            <div class="placeholder-status" id="qrScannerStatus">Ready to scan at Home / Kitchen</div>
           </div>
         </div>
 
+        <div class="qr-scanner-status" id="qrScannerStatus" role="status" aria-live="polite">Ready to scan at Home / Kitchen</div>
+
         <div class="scanner-btn-group">
-          <button class="btn btn-primary btn-block" id="simulateQrScanSuccessBtn">
-            ⚡ Scan Home / Kitchen QR Terminal Now (Verify & Disarm)
-          </button>
-          <button class="btn btn-secondary btn-sm btn-block" id="toggleWebcamBtn">
-            Enable Physical Webcam
-          </button>
+          <button class="btn btn-primary btn-block" id="toggleWebcamBtn">Start QR Scanner</button>
+          <button class="hidden" type="button" id="demoQrScanSuccessBtn">Demo only: simulate a successful QR scan</button>
         </div>
       </div>
 
@@ -1140,6 +1137,7 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <!-- Core Interactive Logic -->
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
   <script src="app.js"></script>
 
   <!-- 🎬 Hackathon Demo Orchestrator — remove before production -->
