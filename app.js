@@ -841,65 +841,35 @@
   // =========================================================================
   function renderKitchenQrCode() {
     const holder = DOM.qrCanvasHolder;
-    holder.innerHTML = `
-      <svg viewBox="0 0 250 250" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="250" height="250" fill="white"/>
-        <!-- Top Left Position Marker -->
-        <rect x="20" y="20" width="60" height="60" fill="black"/>
-        <rect x="30" y="30" width="40" height="40" fill="white"/>
-        <rect x="40" y="40" width="20" height="20" fill="black"/>
-        <!-- Top Right Position Marker -->
-        <rect x="170" y="20" width="60" height="60" fill="black"/>
-        <rect x="180" y="30" width="40" height="40" fill="white"/>
-        <rect x="190" y="40" width="20" height="20" fill="black"/>
-        <!-- Bottom Left Position Marker -->
-        <rect x="20" y="170" width="60" height="60" fill="black"/>
-        <rect x="30" y="180" width="40" height="40" fill="white"/>
-        <rect x="40" y="190" width="20" height="20" fill="black"/>
-        <!-- High Density Data Matrix Modules -->
-        <rect x="90" y="25" width="10" height="10" fill="black"/>
-        <rect x="110" y="25" width="20" height="10" fill="black"/>
-        <rect x="140" y="25" width="10" height="10" fill="black"/>
-        <rect x="90" y="45" width="30" height="10" fill="black"/>
-        <rect x="130" y="45" width="10" height="10" fill="black"/>
-        <rect x="150" y="45" width="10" height="10" fill="black"/>
-        <rect x="100" y="65" width="20" height="10" fill="black"/>
-        <rect x="130" y="65" width="20" height="10" fill="black"/>
-        <!-- Middle Band -->
-        <rect x="25" y="90" width="15" height="10" fill="black"/>
-        <rect x="50" y="90" width="10" height="10" fill="black"/>
-        <rect x="70" y="90" width="25" height="10" fill="black"/>
-        <rect x="110" y="90" width="30" height="10" fill="black"/>
-        <rect x="155" y="90" width="20" height="10" fill="black"/>
-        <rect x="190" y="90" width="15" height="10" fill="black"/>
-        <rect x="215" y="90" width="15" height="10" fill="black"/>
-        
-        <rect x="25" y="110" width="20" height="15" fill="black"/>
-        <rect x="65" y="110" width="30" height="15" fill="black"/>
-        <rect x="110" y="110" width="30" height="30" rx="4" fill="#FF2B4E"/>
-        <text x="125" y="130" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">⚡</text>
-        <rect x="155" y="110" width="20" height="15" fill="black"/>
-        <rect x="190" y="110" width="35" height="15" fill="black"/>
+    if (!holder) return;
 
-        <rect x="25" y="135" width="15" height="15" fill="black"/>
-        <rect x="55" y="135" width="25" height="15" fill="black"/>
-        <rect x="90" y="135" width="10" height="15" fill="black"/>
-        <rect x="150" y="135" width="35" height="15" fill="black"/>
-        <rect x="200" y="135" width="25" height="15" fill="black"/>
-        <!-- Bottom Band -->
-        <rect x="90" y="170" width="20" height="15" fill="black"/>
-        <rect x="120" y="170" width="15" height="15" fill="black"/>
-        <rect x="145" y="170" width="30" height="15" fill="black"/>
-        <rect x="185" y="170" width="15" height="15" fill="black"/>
-        <rect x="210" y="170" width="20" height="15" fill="black"/>
-        
-        <rect x="90" y="195" width="15" height="20" fill="black"/>
-        <rect x="115" y="195" width="25" height="20" fill="black"/>
-        <rect x="150" y="195" width="20" height="20" fill="black"/>
-        <rect x="180" y="195" width="30" height="20" fill="black"/>
-        <rect x="220" y="195" width="10" height="20" fill="black"/>
-      </svg>
-    `;
+    const terminalId = 'FLAT4B-KITCHEN-KETTLE-01';
+    const terminalToken = 'WAKESTAKE-SECURE-99281-DISARM';
+    const payload = `WAKESTAKE|DISARM|${terminalId}|${terminalToken}`;
+
+    if (typeof window.qrcode !== 'function') {
+      holder.textContent = 'QR generator unavailable. Reload this page while connected to the internet.';
+      return;
+    }
+
+    try {
+      const qr = window.qrcode(0, 'H');
+      qr.addData(payload, 'Byte');
+      qr.make();
+      holder.innerHTML = qr.createSvgTag(6, 4);
+
+      const svg = holder.querySelector('svg');
+      if (svg) {
+        svg.setAttribute('role', 'img');
+        svg.setAttribute('aria-label', 'Scannable WakeStake kitchen disarm QR code');
+        svg.setAttribute('shape-rendering', 'crispEdges');
+        svg.setAttribute('focusable', 'false');
+      }
+      holder.dataset.qrPayload = payload;
+    } catch (error) {
+      console.error('Kitchen QR code could not be generated:', error);
+      holder.textContent = 'QR code could not be generated. Reload this page and try again.';
+    }
   }
 
   // =========================================================================
