@@ -1,5 +1,5 @@
 /**
- * WakeStake — Automated 2-Minute Hackathon Demo Script
+ * WakeStake — Automated 40-Second Hackathon Demo Script
  * =====================================================
  * Injects a floating control panel; runs a full guided tour
  * of every key feature with timed sequences & annotations.
@@ -38,7 +38,7 @@
     [3500, 'Scan before the deadline',            demoSkipToCelebration],
     [3000, 'Finish the guided tour',              demoComplete],
   ];
-  const DEMO_DELAY_SCALE = 2.5;
+  const DEMO_DELAY_SCALE = 0.84;
 
   let stepIndex = 0;
   let timeoutHandle = null;
@@ -342,7 +342,7 @@
       }, 0);
 
       // Leave the explanation visible long enough to read.
-      setTimeout(() => ann.remove(), 5000);
+      setTimeout(() => ann.remove(), 3000);
     }
   }
 
@@ -393,8 +393,8 @@
       </div>
     `;
     document.body.appendChild(banner);
-    setTimeout(() => { banner.style.opacity = '0'; banner.style.transition = 'opacity 0.5s'; }, 4500);
-    setTimeout(() => banner.remove(), 5000);
+    setTimeout(() => { banner.style.opacity = '0'; banner.style.transition = 'opacity 0.5s'; }, 1600);
+    setTimeout(() => banner.remove(), 2100);
   }
 
   function demoSetAlarmTime() {
@@ -641,7 +641,7 @@
     updatePanelLabel(`
       <strong style="color:#00E599">🎉 Demo Complete!</strong><br>
       <span style="color:#718096;font-size:0.72rem;">
-        Full 2-min tour finished. WakeStake: loss-aversion that actually works.
+        40-second guided tour finished. WakeStake: set a target, choose a station, and verify before the deadline.
       </span>
     `);
     updateProgressBar(100);
@@ -705,7 +705,7 @@
       '%c⚡ WakeStake Demo Mode Active',
       'background:#FF2B4E;color:#fff;font-size:14px;font-weight:bold;padding:4px 12px;border-radius:6px'
     );
-    console.log('Click ▶ Start Demo in the floating panel to begin the 2-minute tour.');
+    console.log('Click ▶ Start Demo in the floating panel to begin the 40-second tour.');
   }
 
   if (document.readyState === 'loading') {
