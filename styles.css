@@ -133,7 +133,10 @@ body {
 
 body.mode-mobile-frame {
   background-color: #020305;
-  padding: 40px 10px;
+  width: min(100% - 20px, 440px);
+  margin: 0 auto;
+  padding: 16px 10px 32px;
+  overflow-x: clip;
 }
 
 body.mode-mobile-frame .device-frame-top {
@@ -146,6 +149,7 @@ body.mode-mobile-frame .header-container {
 }
 
 body.mode-mobile-frame .app-header {
+  width: 100%;
   max-width: 420px;
   margin: 0 auto;
   border-radius: 24px 24px 0 0;
@@ -154,6 +158,7 @@ body.mode-mobile-frame .app-header {
 }
 
 body.mode-mobile-frame #mainContainer {
+  width: 100%;
   max-width: 420px;
   margin: 0 auto;
   background: #090B10;
@@ -3279,4 +3284,211 @@ body.mode-mobile-frame #mainContainer {
   .calendar-cell {
     font-size: 0.7rem;
   }
+}
+
+/* Keep the simulated handset and its contents within narrow viewports. */
+@media (max-width: 480px) {
+  body.mode-mobile-frame {
+    width: min(100% - 16px, 440px);
+    padding: 12px 0 24px;
+  }
+
+  body.mode-mobile-frame .header-container {
+    gap: 8px;
+    padding: 0 10px;
+  }
+
+  body.mode-mobile-frame .header-actions {
+    gap: 6px;
+  }
+
+  body.mode-mobile-frame .nav-tabs-bar {
+    min-width: 0;
+  }
+
+  body.mode-mobile-frame #mainContainer {
+  width: 100%;
+    padding: 18px 12px 40px;
+  }
+
+  body.mode-mobile-frame .main-content,
+  body.mode-mobile-frame .tab-inner-container,
+  body.mode-mobile-frame .alarm-hero-container {
+    min-width: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  body.mode-mobile-frame .time-instrument-box,
+  body.mode-mobile-frame .time-digits-wrap {
+    min-width: 0;
+    gap: 10px;
+  }
+
+  body.mode-mobile-frame .time-instrument-box {
+    align-items: stretch;
+  }
+
+  body.mode-mobile-frame .time-digits-wrap {
+    flex-wrap: wrap;
+  }
+
+  body.mode-mobile-frame .time-controls-cluster {
+    align-items: stretch;
+    width: 100%;
+  }
+
+  body.mode-mobile-frame .stepper-group,
+  body.mode-mobile-frame .preset-chips {
+    flex-wrap: wrap;
+  }
+
+  body.mode-mobile-frame .metrics-grid,
+  body.mode-mobile-frame .hud-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  body.mode-mobile-frame .beer-foam-header,
+  body.mode-mobile-frame .pot-goal-subtext {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  body.mode-mobile-frame .beer-foam-header {
+    justify-content: center;
+  }
+
+  body.mode-mobile-frame .beer-hero-card,
+  body.mode-mobile-frame .emergency-hud-container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  body.mode-mobile-frame .emergency-overlay,
+  body.mode-mobile-frame .alarm-takeover-overlay,
+  body.mode-mobile-frame .disarm-modal-overlay,
+  body.mode-mobile-frame .celebration-overlay,
+  body.mode-mobile-frame .forfeit-overlay {
+    padding: 10px;
+  }
+
+  body.mode-mobile-frame .emergency-hud-container,
+  body.mode-mobile-frame .disarm-card,
+  body.mode-mobile-frame .celebration-card,
+  body.mode-mobile-frame .forfeit-card {
+    width: 100%;
+    min-width: 0;
+  }
+
+  body.mode-mobile-frame .alarm-digital-clock {
+    font-size: clamp(2.2rem, 12vw, 3.4rem);
+  }
+
+  body.mode-mobile-frame .celebration-amount {
+    font-size: clamp(1.8rem, 10vw, 2.8rem);
+  }
+}
+/* Preview mode uses a phone sized canvas even in a desktop browser. */
+body.mode-mobile-frame .header-container {
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+
+body.mode-mobile-frame .brand-text,
+body.mode-mobile-frame .status-indicator {
+  display: none;
+}
+
+body.mode-mobile-frame .header-actions {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+body.mode-mobile-frame .view-name {
+  display: none;
+}
+
+body.mode-mobile-frame .nav-tabs-bar {
+  order: 3;
+  flex: 0 0 100%;
+  width: 100%;
+  min-width: 0;
+  margin-top: 0;
+  justify-content: space-between;
+}
+
+body.mode-mobile-frame .nav-pill {
+  min-width: 0;
+  padding: 6px 8px;
+  justify-content: center;
+  font-size: 0.72rem;
+}
+
+body.mode-mobile-frame .nav-pill .tab-icon {
+  display: none;
+}
+
+body.mode-mobile-frame .main-content {
+  padding: 28px 14px 48px;
+}
+
+body.mode-mobile-frame .simulator-trigger-bar {
+  width: 100%;
+  min-width: 0;
+}
+
+body.mode-mobile-frame #triggerAlarmSimBtn {
+  width: 100%;
+  max-width: 100%;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.4;
+  padding: 12px 14px;
+}
+
+body.mode-mobile-frame .protocol-strip {
+  align-items: stretch;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: var(--radius-lg);
+}
+
+body.mode-mobile-frame .protocol-item {
+  min-width: 0;
+  width: 100%;
+}
+
+body.mode-mobile-frame .protocol-item .p-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+body.mode-mobile-frame .p-arrow {
+  display: none;
+}
+
+body.mode-mobile-frame .verify-toggle-group {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+body.mode-mobile-frame .verify-pill-card,
+body.mode-mobile-frame .verify-meta {
+  min-width: 0;
+}
+
+body.mode-mobile-frame .verify-headline {
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+body.mode-mobile-frame .verify-headline strong,
+body.mode-mobile-frame .verify-meta small {
+  overflow-wrap: anywhere;
+}
+
+body.mode-mobile-frame .reliability-tag,
+body.mode-mobile-frame .ai-tag {
+  white-space: normal;
 }
