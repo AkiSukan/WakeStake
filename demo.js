@@ -15,29 +15,30 @@
   // ─── CONFIG ───────────────────────────────────────────────────────────────
   const DEMO_STEPS = [
     // [delay ms from previous, label, fn]
-    [0,    'Welcome annotation',          showWelcomeBanner],
-    [2800, 'Set Alarm Time → 07:30',      demoSetAlarmTime],
-    [2200, 'Quick Preset — Lecture',      demoPresetChip],
-    [1800, 'Bump Stake to £20',           demoBumpStake],
-    [1800, 'Stake slider → £25',          demoSliderStake],
-    [2000, 'Loss Equivalency update',     demoLossEquivalent],
-    [1600, 'Switch destination → Beer Pot', demoBeerPot],
-    [1800, 'Set QR station → Gym (20-min walk)', demoQrLocation],
-    [2000, 'Lock In Stake button',        demoLockIn],
-    [2200, 'Nav → War Room (Leaderboard)', demoNavWarRoom],
-    [1800, 'Simulate Flatmate Snooze',    demoSimulateSnooze],
-    [2200, 'Nav → Streaks',               demoNavStreaks],
-    [1800, 'Heatmap scroll',              demoStreakHeatmap],
-    [2200, 'Nav → QR Terminal',           demoNavQR],
-    [2000, 'QR Terminal highlight',       demoQRTerminal],
-    [2200, 'Nav → Pro Business Model',    demoNavPro],
-    [1800, 'Pro tier highlight',          demoProTier],
-    [2500, 'Nav → Alarm (return)',        demoNavAlarm],
-    [2000, '⚡ Launch Morning Simulation', demoLaunchSim],
-    [4000, 'Disarm modal — QR scan',      demoDisarmQR],
-    [3500, 'Celebration — Stake Protected!', demoSkipToCelebration],
-    [3000, 'Demo complete 🎉',             demoComplete],
+    [0,    'Welcome and how the contract works', showWelcomeBanner],
+    [2800, 'Set the wake-up target',             demoSetAlarmTime],
+    [2200, 'Use a preset, then adjust it',       demoPresetChip],
+    [1800, 'Choose the amount at risk',          demoBumpStake],
+    [1800, 'Fine-tune the stake amount',         demoSliderStake],
+    [2000, 'See the stake in everyday terms',    demoLossEquivalent],
+    [1600, 'Choose who receives a forfeit',      demoBeerPot],
+    [1800, 'Set Gym QR and walking deadline',    demoQrLocation],
+    [2000, 'Save the alarm contract',            demoLockIn],
+    [2200, 'Review the shared War Room',          demoNavWarRoom],
+    [1800, 'See how a snooze changes the pot',    demoSimulateSnooze],
+    [2200, 'Review streak history',               demoNavStreaks],
+    [1800, 'Read the verification history',       demoStreakHeatmap],
+    [2200, 'Open the QR station page',            demoNavQR],
+    [2000, 'See how to print a station QR',       demoQRTerminal],
+    [2200, 'Review the Pro plan',                 demoNavPro],
+    [1800, 'See the Pro pricing details',         demoProTier],
+    [2500, 'Return to the alarm',                 demoNavAlarm],
+    [2000, 'Start the configured alarm timer',    demoLaunchSim],
+    [4000, 'Open the selected QR scanner',        demoDisarmQR],
+    [3500, 'Scan before the deadline',            demoSkipToCelebration],
+    [3000, 'Finish the guided tour',              demoComplete],
   ];
+  const DEMO_DELAY_SCALE = 2.5;
 
   let stepIndex = 0;
   let timeoutHandle = null;
@@ -260,7 +261,7 @@
 
       stepIndex++;
       runNextStep();
-    }, delay);
+    }, delay * DEMO_DELAY_SCALE);
   }
 
   function skipStep() {
@@ -340,8 +341,8 @@
         ann.style.left = Math.min(left, window.innerWidth - ar.width - 10) + 'px';
       }, 0);
 
-      // Auto-remove annotation after 2s
-      setTimeout(() => ann.remove(), 2000);
+      // Leave the explanation visible long enough to read.
+      setTimeout(() => ann.remove(), 5000);
     }
   }
 
@@ -387,13 +388,13 @@
       <div style="font-size:1.1rem;color:#A0AEC0;font-weight:600;">
         Loss-Aversion Alarm Clock &bull; Hackathon Demo
       </div>
-      <div style="font-size:0.82rem;color:#718096;margin-top:8px;">
-        Stake real money. Walk to your selected QR station. Or pay your flatmates.
+      <div style="font-size:0.88rem;color:#A0AEC0;margin:8px 24px 0;max-width:620px;text-align:center;line-height:1.55;">
+        Set a wake target, choose a QR station, and give yourself time to reach it. Miss the scan deadline and the selected beneficiary gets the forfeit.
       </div>
     `;
     document.body.appendChild(banner);
-    setTimeout(() => { banner.style.opacity = '0'; banner.style.transition = 'opacity 0.5s'; }, 2000);
-    setTimeout(() => banner.remove(), 2600);
+    setTimeout(() => { banner.style.opacity = '0'; banner.style.transition = 'opacity 0.5s'; }, 4500);
+    setTimeout(() => banner.remove(), 5000);
   }
 
   function demoSetAlarmTime() {
@@ -403,7 +404,7 @@
       if (!input) return;
       input.value = '07:30';
       input.dispatchEvent(new Event('change', { bubbles: true }));
-      spotlight(input, '⏰ Wake target: 07:30 AM — set & locked');
+      spotlight(input, 'Wake target set to 07:30. When this time arrives, the alarm opens the configured verification window.');
     }, 400);
   }
 
@@ -411,7 +412,7 @@
     const chip = document.querySelector('.preset-chips .chip[data-time="07:30"]');
     if (chip) {
       chip.click();
-      spotlight(chip, '🎓 One-tap presets: Gym / Lecture / Exam', 'top');
+      spotlight(chip, 'Presets set common wake-up times quickly. You can still adjust the time manually afterward.', 'top');
     }
   }
 
@@ -419,7 +420,7 @@
     const chip20 = document.querySelector('.stake-chip[data-amount="20"]');
     if (chip20) {
       chip20.click();
-      spotlight(chip20, '💰 Stake £20 — the higher the stake, the louder the motivation!', 'top');
+      spotlight(chip20, 'Choose the amount at risk. If the deadline passes without verification, this stake is forfeited.', 'top');
     }
   }
 
@@ -434,12 +435,12 @@
       slider.dispatchEvent(new Event('input', { bubbles: true }));
       if (val >= 25) clearInterval(iv);
     }, 60);
-    spotlight(slider, '🎚️ Drag to dial in the exact pain level', 'top');
+    spotlight(slider, 'The slider fine-tunes the stake. The amount and its everyday cost equivalent update together.', 'top');
   }
 
   function demoLossEquivalent() {
     const pill = document.getElementById('lossEquivalentPill');
-    spotlight(pill, '🍕 Real-world equivalency — makes the loss tangible', 'top');
+    spotlight(pill, 'This converts the stake into a familiar purchase so the cost is easier to compare.', 'top');
     // Pulse it
     if (pill) {
       pill.style.transform = 'scale(1.04)';
@@ -453,7 +454,7 @@
     const card = document.querySelector('.dest-pill-card[data-target="drinks"]');
     if (card) {
       card.click();
-      spotlight(card, '🍺 Friday Beer Pot — forfeit funds the flat pub night!', 'top');
+      spotlight(card, 'Choose a beneficiary for an automatic forfeit. This option sends it to the shared Friday Beer Pot.', 'top');
     }
   }
 
@@ -484,7 +485,7 @@
   function demoLockIn() {
     const btn = document.getElementById('saveAlarmBtn');
     if (!btn) return;
-    spotlight(btn, '🔒 Lock In — escrow contract armed. No backing out!', 'top');
+    spotlight(btn, 'Save the wake time, stake, beneficiary, QR location, and scan deadline as one alarm contract.', 'top');
     // Visual press
     btn.style.transform = 'scale(0.97)';
     btn.style.transition = 'transform 0.15s';
@@ -498,14 +499,14 @@
     clickTab('tab-leaderboard');
     setTimeout(() => {
       const section = document.getElementById('tab-leaderboard');
-      spotlight(section, '⚔️ Flat 4B War Room — communal beer kitty & Hall of Shame');
+      spotlight(section, 'The War Room shows shared activity, the communal pot, and who has kept or forfeited a stake.');
     }, 350);
   }
 
   function demoSimulateSnooze() {
     const btn = document.getElementById('addSimulatedSnoozeBtn');
     if (!btn) return;
-    spotlight(btn, '💸 Dave just snoozed! +£5 straight into the pub kitty 🍻', 'top');
+    spotlight(btn, 'This sample snooze records a £5 penalty and updates the shared pot and activity feed.', 'top');
     setTimeout(() => btn.click(), 300);
   }
 
@@ -513,14 +514,14 @@
     clickTab('tab-streak');
     setTimeout(() => {
       const grid = document.getElementById('streakCalendarGrid');
-      spotlight(grid, '📅 30-day Discipline Heatmap — green = safe, red = forfeited');
+      spotlight(grid, 'The calendar summarizes recent wake outcomes. Green marks a protected stake; red marks a forfeit.');
     }, 400);
   }
 
   function demoStreakHeatmap() {
     const table = document.querySelector('.audit-table');
     if (table) {
-      spotlight(table, '🔐 Immutable Verification Ledger — cryptographic wake log');
+      spotlight(table, 'The ledger lists each alarm outcome, verification method, and beneficiary for later review.');
       table.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
     // Also highlight stats cards
@@ -534,13 +535,13 @@
     clickTab('tab-station');
     setTimeout(() => {
       const placard = document.getElementById('printableQrPlacard');
-      spotlight(placard, '📷 Physical kitchen terminal — print & tape to your kettle!');
+      spotlight(placard, 'This page provides a printable QR placard for a physical scan station.');
     }, 400);
   }
 
   function demoQRTerminal() {
     const printBtn = document.getElementById('printQrBtn');
-    spotlight(printBtn, '🖨️ One-click high-res print for your kitchen or bathroom mirror', 'top');
+    spotlight(printBtn, 'Print a high-contrast QR placard and place it at the station you want people to scan.', 'top');
     // Shimmer the QR code
     const qr = document.getElementById('qrCanvasHolder');
     if (qr) {
@@ -553,13 +554,13 @@
     clickTab('tab-pro');
     setTimeout(() => {
       const proCard = document.querySelector('.featured-tier');
-      spotlight(proCard, '🚀 WakeStake Pro — House wars, GPS geo-fence & WhatsApp shame bot');
+      spotlight(proCard, 'The Pro plan describes optional group challenges and additional accountability features.');
     }, 400);
   }
 
   function demoProTier() {
     const proBtn = document.getElementById('upgradeProBtn');
-    spotlight(proBtn, '💳 Only £2.99/mo — free if you wake up on time. We only monetise snoozes!', 'top');
+    spotlight(proBtn, 'This card explains the monthly plan and its included features before upgrade.', 'top');
     // Animate the price card
     const featuredCard = document.querySelector('.featured-tier');
     if (featuredCard) {
@@ -581,7 +582,7 @@
     const btn = document.getElementById('triggerAlarmSimBtn');
     if (btn) {
       const deadline = document.getElementById('qrDeadlineMinutes')?.value || '5';
-      spotlight(btn, `🚨 Wake-up simulation starts. Scan the ${demoGetQrLocationLabel()} QR within ${deadline} minutes.`, 'top');
+      spotlight(btn, `The alarm starts a ${deadline}-minute deadline. Reach the ${demoGetQrLocationLabel()} QR station and scan before it expires.`, 'top');
       setTimeout(() => btn.click(), 600);
     }
   }
@@ -590,7 +591,7 @@
     // Emergency modal should be up — click disarm
     const disarmBtn = document.getElementById('openDisarmModalBtn');
     if (disarmBtn && document.getElementById('alarmModal').classList.contains('active')) {
-      spotlight(disarmBtn, `🏃 Opening the ${demoGetQrLocationLabel()} QR scanner.`, 'top');
+      spotlight(disarmBtn, `Open the scanner for the ${demoGetQrLocationLabel()} station. The alarm timer keeps running until you verify.`, 'top');
       setTimeout(() => disarmBtn.click(), 700);
     }
   }
@@ -599,7 +600,7 @@
     // Trigger QR scan success
     const scanBtn = document.getElementById('simulateQrScanSuccessBtn');
     if (scanBtn && document.getElementById('disarmModal').classList.contains('active')) {
-      spotlight(scanBtn, `📷 Scanning the ${demoGetQrLocationLabel()} QR terminal… VERIFIED! Stake returned!`, 'top');
+      spotlight(scanBtn, `Confirm a scan at the ${demoGetQrLocationLabel()} station. Successful verification protects the stake.`, 'top');
       setTimeout(() => scanBtn.click(), 700);
     } else {
       // disarm modal may not be open; force success directly
