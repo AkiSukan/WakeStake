@@ -3394,6 +3394,62 @@ body.mode-mobile-frame #mainContainer {
     font-size: clamp(1.8rem, 10vw, 2.8rem);
   }
 }
+body.mode-mobile-frame .time-instrument-box {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  gap: 14px;
+}
+
+body.mode-mobile-frame .time-digits-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 8px;
+}
+
+body.mode-mobile-frame .time-input-container {
+  flex: 1 1 100%;
+  min-width: 0;
+}
+
+body.mode-mobile-frame .minimal-time-input {
+  width: min(100%, 230px);
+  max-width: 100%;
+  font-size: clamp(2rem, 9vw, 2.7rem);
+}
+
+body.mode-mobile-frame .time-clock-icon {
+  flex: 0 0 auto;
+}
+
+body.mode-mobile-frame .period-pill {
+  max-width: 100%;
+  white-space: normal;
+}
+
+body.mode-mobile-frame .time-controls-cluster {
+  align-items: stretch;
+  width: 100%;
+}
+
+body.mode-mobile-frame .stepper-group {
+  justify-content: flex-start;
+}
+
+body.mode-mobile-frame .preset-chips {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 100%;
+}
+
+body.mode-mobile-frame .preset-chips .chip {
+  min-width: 0;
+  padding: 6px 4px;
+  white-space: normal;
+}
+
 /* Preview mode uses a phone sized canvas even in a desktop browser. */
 body.mode-mobile-frame .header-container {
   flex-wrap: wrap;
