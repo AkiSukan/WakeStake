@@ -263,10 +263,7 @@
     stakeDisplay: document.getElementById('stakeDisplay'),
     stakeChips: document.querySelectorAll('.stake-chip'),
     stakeSlider: document.getElementById('stakeSlider'),
-    lossAversionBadge: document.getElementById('lossAversionBadge'),
     lossEquivalentPill: document.getElementById('lossEquivalentPill'),
-    lossMeterFill: document.getElementById('lossMeterFill'),
-    calloutStake: document.getElementById('calloutStake'),
     destCards: document.querySelectorAll('.dest-option-card, .dest-card-clean, .dest-pill-card'),
     destRadios: document.querySelectorAll('.dest-radio'),
     flatmateMonzoTag: document.getElementById('flatmateMonzoTag'),
@@ -504,46 +501,35 @@
     }
 
     // Psych label & loss equivalency
-    updateLossPsychology(stake);
+    updateLossEquivalent(stake);
   }
 
-  function updateLossPsychology(amount) {
-    let text = '⚡ Mild Sting';
+  function updateLossEquivalent(amount) {
     let eqText = '1 Flat White & Warm Croissant';
     let eqIcon = '☕';
 
     if (amount >= 100) {
-      text = '☢️ Nuclear Forfeit';
       eqText = 'London to Edinburgh Return Train Ticket';
       eqIcon = '✈️';
     } else if (amount >= 50) {
-      text = '☠️ Financial Heart Attack';
       eqText = 'Full Weekly Supermarket Grocery Shop';
       eqIcon = '🛒';
     } else if (amount >= 25) {
-      text = '🚨 Severe Agony';
       eqText = 'Deliveroo Feast & Sides for Two';
       eqIcon = '🍕';
     } else if (amount >= 15) {
-      text = '⚠️ Serious Pain';
       eqText = '3 Pints & Bar Snacks at the Pub';
       eqIcon = '🍻';
     } else if (amount >= 10) {
-      text = '🔥 Definite Ouch';
       eqText = '2 Pints of Camden Hells at the Pub';
       eqIcon = '🍺';
     } else if (amount >= 5) {
-      text = '⚡ Mild Sting';
       eqText = 'Specialty Flat White & Pastry';
       eqIcon = '☕';
     } else {
-      text = '⚡ Gentle Nudge';
       eqText = 'Espresso Shot';
       eqIcon = '☕';
     }
-
-    if (DOM.lossAversionBadge) DOM.lossAversionBadge.textContent = text;
-    if (DOM.calloutStake) DOM.calloutStake.textContent = `£${amount.toFixed(2)}`;
 
     if (DOM.lossEquivalentPill) {
       DOM.lossEquivalentPill.innerHTML = `
@@ -552,10 +538,6 @@
       `;
     }
 
-    if (DOM.lossMeterFill) {
-      const fillPct = Math.min(100, Math.max(5, (amount / 100) * 100));
-      DOM.lossMeterFill.style.width = `${fillPct}%`;
-    }
   }
 
   function updateSleepDurationTag() {

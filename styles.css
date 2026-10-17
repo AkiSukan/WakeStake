@@ -721,17 +721,6 @@ body.mode-mobile-frame #mainContainer {
   margin-left: auto;
 }
 
-.psych-tag {
-  font-size: 0.72rem;
-  font-weight: 800;
-  color: var(--red-crimson);
-  background: var(--red-subtle);
-  padding: 3px 10px;
-  border-radius: var(--radius-pill);
-  border: 1px solid rgba(255, 43, 78, 0.3);
-  margin-left: auto;
-}
-
 /* Time Setting Instrument */
 .time-instrument-box {
   display: flex;
@@ -976,44 +965,6 @@ body.mode-mobile-frame #mainContainer {
   color: var(--beer-gold);
 }
 
-/* Loss Meter */
-.loss-meter-container {
-  width: 100%;
-  max-width: 480px;
-  margin-bottom: 18px;
-}
-
-.loss-meter-track {
-  width: 100%;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 3px;
-  overflow: hidden;
-  position: relative;
-}
-
-.loss-meter-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #3B82F6 0%, #EAB308 30%, #F97316 65%, var(--red-crimson) 100%);
-  border-radius: 3px;
-  transition: width 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 0 10px rgba(255, 43, 78, 0.4);
-}
-
-.loss-meter-markers {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 5px;
-  font-size: 0.65rem;
-  font-family: var(--font-mono);
-  color: #5A6679;
-}
-
-.m-point.active {
-  color: #A0AEC0;
-  font-weight: 700;
-}
-
 .stake-chips-bar {
   display: flex;
   gap: 8px;
@@ -1090,23 +1041,6 @@ body.mode-mobile-frame #mainContainer {
   font-size: 0.72rem;
   color: #718096;
   font-family: var(--font-mono);
-}
-
-.psych-micro-note {
-  margin-top: 14px;
-  font-size: 0.78rem;
-  color: #A0AEC0;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--border-hairline);
-  padding: 8px 16px;
-  border-radius: var(--radius-pill);
-  text-align: center;
-  max-width: 520px;
-  line-height: 1.45;
-}
-
-.psych-micro-note strong {
-  color: #FFF;
 }
 
 /* Destination Cards */
@@ -3720,10 +3654,7 @@ body.minimal-mode .status-indicator,
 body.minimal-mode .hero-badge-wrap,
 body.minimal-mode .hero-caption,
 body.minimal-mode .sleep-assistant-pill,
-body.minimal-mode .psych-tag,
 body.minimal-mode .loss-equivalent-pill,
-body.minimal-mode .loss-meter-container,
-body.minimal-mode .psych-micro-note,
 body.minimal-mode .protocol-strip,
 body.minimal-mode #navBeerBadge,
 body.minimal-mode #navStreakBadge,
