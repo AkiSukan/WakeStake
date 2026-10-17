@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WakeStake — The Loss-Aversion Alarm Clock That Actually Gets You Up</title>
+  <meta name="description" content="A behavioral-economics alarm where you put real money on the line to wake up. Scan your kitchen QR within 5 minutes or forfeit your stake.">
+  
+  <!-- Modern Clean Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-dark">
+  <!-- Minimal Ambient Lighting -->
+  <div class="ambient-glow glow-red"></div>
+
+  <!-- Header Navigation (Ultra-Minimalist) -->
+  <header class="app-header">
+    <div class="header-container">
+      
+      <!-- Minimal Brand -->
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <span class="brand-title">WAKE<strong>STAKE</strong></span>
+      </div>
+
+      <!-- Clean Segmented Tabs -->
+      <nav class="nav-tabs-bar" role="tablist">
+        <button class="tab-link nav-pill active" data-tab="tab-alarm" role="tab" aria-selected="true">
+          Alarm
+        </button>
+        <button class="tab-link nav-pill" data-tab="tab-leaderboard" role="tab" aria-selected="false">
+          War Room <span class="tab-badge" id="navBeerBadge">£45</span>
+        </button>
+        <button class="tab-link nav-pill" data-tab="tab-streak" role="tab" aria-selected="false">
+          Streaks <span class="tab-badge badge-green" id="navStreakBadge">14d</span>
+        </button>
+        <button class="tab-link nav-pill" data-tab="tab-station" role="tab" aria-selected="false">
+          QR Terminal
+        </button>
+        <button class="tab-link nav-pill" data-tab="tab-pro" role="tab" aria-selected="false">
+          Pro
+        </button>
+      </nav>
+
+      <!-- Minimal Utilities -->
+      <div class="header-actions">
+        <!-- Live Alarm Status -->
+        <div class="status-indicator" id="headerAlarmPill">
+          <span class="pulse-point"></span>
+          <span class="status-text" id="headerPillText"><strong>07:30 AM</strong> · £10.00</span>
+        </div>
+
+        <!-- Audio Toggle -->
+        <button class="icon-toggle" id="soundToggleBtn" title="Toggle Alarm Sound" aria-label="Toggle Sound">
+          <svg id="soundIconOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <svg id="soundIconOff" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="1" y1="1" x2="23" y2="23"></line>
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <span class="btn-label hidden" id="soundStatusLabel">Audio Ready</span>
+        </button>
+
+        <!-- View Mode Switch -->
+        <div class="view-switch" id="viewModeToggle">
+          <button class="view-btn view-opt active" data-mode="desktop" title="Desktop View">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+              <line x1="8" y1="21" x2="16" y2="21"></line>
+            </svg>
+          </button>
+          <button class="view-btn view-opt" data-mode="mobile" title="Mobile Frame">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="5" y="2" width="14" height="20" rx="3"></rect>
+              <line x1="12" y1="18" x2="12.01" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Viewport -->
+  <main class="main-content" id="mainContainer">
+    <div class="content-wrapper" id="contentWrapper">
+
+      <!-- ==============================================
+           TAB 1: ALARM & PLEDGE SETUP (MINIMALIST & SCULPTURAL)
+           ============================================== -->
+      <section class="tab-pane active" id="tab-alarm">
+        
+        <div class="alarm-hero-container">
+          
+          <!-- Hero Header -->
+          <div class="hero-minimal-header">
+            <span class="micro-tag">BEHAVIORAL ECONOMICS ALARM</span>
+            <h1 class="hero-headline">Put skin in the game. <span class="text-gradient">Wake up on time.</span></h1>
+            <p class="hero-caption">Snoozing has zero immediate consequence. Put real money on the line and verify at your kitchen kettle or pay the forfeit.</p>
+          </div>
+
+          <!-- The Minimalist Precision Instrument Card -->
+          <div class="card instrument-card">
+            
+            <!-- Section 1: Wake Time -->
+            <div class="instrument-row">
+              <div class="row-label-wrap">
+                <span class="row-index">01</span>
+                <span class="row-label">TARGET TIME</span>
+              </div>
+
+              <div class="time-instrument-box">
+                <div class="time-digits-wrap">
+                  <input type="time" id="alarmTimeInput" value="07:30" class="minimal-time-input" required>
+                  <span class="period-pill" id="timePeriodTag">Tomorrow Morning</span>
+                </div>
+                
+                <div class="preset-chips">
+                  <button type="button" class="chip" data-time="06:30">06:30 <small>Gym</small></button>
+                  <button type="button" class="chip active" data-time="07:30">07:30 <small>Lecture</small></button>
+                  <button type="button" class="chip" data-time="08:15">08:15 <small>Exam</small></button>
+                </div>
+              </div>
+
+              <div class="mission-input-wrap">
+                <input type="text" id="alarmLabelInput" class="minimal-text-input" value="Econ 201 Midterm — Lecture Theatre A" placeholder="What is getting you up? (Mission / Reason)">
+              </div>
+            </div>
+
+            <!-- Section 2: Stake Pledge -->
+            <div class="instrument-row">
+              <div class="row-label-wrap">
+                <span class="row-index">02</span>
+                <span class="row-label">PLEDGE STAKE</span>
+                <span class="psych-tag" id="lossAversionBadge">⚡ Mild Sting</span>
+              </div>
+
+              <div class="stake-instrument-box">
+                <div class="stake-display-hero">
+                  <span class="currency">£</span>
+                  <span class="amount" id="stakeDisplay">10</span>
+                  <span class="decimal">.00</span>
+                </div>
+
+                <div class="stake-chips-bar" id="stakeChips">
+                  <button type="button" class="stake-chip" data-amount="5">£5</button>
+                  <button type="button" class="stake-chip active" data-amount="10">£10</button>
+                  <button type="button" class="stake-chip" data-amount="20">£20</button>
+                  <button type="button" class="stake-chip" data-amount="50">£50</button>
+                  <button type="button" class="stake-chip custom-chip" id="customStakeBtn">Custom</button>
+                </div>
+
+                <div class="slider-box">
+                  <input type="range" id="stakeSlider" min="2" max="100" step="1" value="10" class="minimal-slider">
+                  <div class="slider-labels">
+                    <span>£2</span>
+                    <span>£25</span>
+                    <span>£50</span>
+                    <span>£75</span>
+                    <span>£100</span>
+                  </div>
+                </div>
+
+                <div class="psych-micro-note">
+                  <span>🧠 <strong>Loss Aversion Multiplier:</strong> Losing <span id="calloutStake">£10.00</span> hurts 2.5× more than gaining £10. Your brain will force you out of bed.</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 3: Beneficiary Routing -->
+            <div class="instrument-row">
+              <div class="row-label-wrap">
+                <span class="row-index">03</span>
+                <span class="row-label">FORFEIT BENEFICIARY</span>
+              </div>
+
+              <div class="dest-toggle-group">
+                <!-- Option A: Monzo -->
+                <label class="dest-option-card dest-card-clean dest-pill-card active" data-target="monzo">
+                  <input type="radio" name="stakeDestination" value="monzo" checked class="dest-radio">
+                  <div class="dest-top-row">
+                    <span class="dest-dot monzo-dot"></span>
+                    <strong>Flatmate Monzo</strong>
+                  </div>
+                  <p class="dest-desc">Instant Faster Payment for their lunch.</p>
+                  <div class="dest-input-wrap">
+                    <span class="prefix">monzo.me/</span>
+                    <input type="text" id="flatmateMonzoTag" class="dest-subinput" value="jamie_flat4" placeholder="flatmate_tag">
+                  </div>
+                </label>
+
+                <!-- Option B: Anti-Charity -->
+                <label class="dest-option-card dest-card-clean dest-pill-card" data-target="anticharity">
+                  <input type="radio" name="stakeDestination" value="anticharity" class="dest-radio">
+                  <div class="dest-top-row">
+                    <span class="dest-dot rival-dot"></span>
+                    <strong>Anti-Charity</strong>
+                  </div>
+                  <p class="dest-desc">Direct penalty to a cause you despise.</p>
+                  <div class="dest-input-wrap">
+                    <select id="antiCharitySelect" class="dest-select">
+                      <option value="millwall">Millwall FC Fan Fund (Arsenal Nemesis)</option>
+                      <option value="rival_uni">Rival Uni Boat Club Fund</option>
+                      <option value="pineapple_pizza">Pineapple on Pizza Lobby</option>
+                      <option value="landlord_tip">Voluntary Landlord Tip Fund</option>
+                    </select>
+                  </div>
+                </label>
+
+                <!-- Option C: Drinks Pot -->
+                <label class="dest-option-card dest-card-clean dest-pill-card" data-target="drinks">
+                  <input type="radio" name="stakeDestination" value="drinks" class="dest-radio">
+                  <div class="dest-top-row">
+                    <span class="dest-dot beer-dot"></span>
+                    <strong>Flat Drinks Pot</strong>
+                  </div>
+                  <p class="dest-desc">Friday beer kitty. Flatmates cheer.</p>
+                  <div class="dest-input-wrap">
+                    <span class="pot-tag">Friday Pot: <strong id="cardPotAmount">£45.00</strong></span>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Section 4: Physical Disarm Verification -->
+            <div class="instrument-row">
+              <div class="row-label-wrap">
+                <span class="row-index">04</span>
+                <span class="row-label">DISARM REQUIREMENT</span>
+              </div>
+
+              <div class="verify-toggle-group">
+                <label class="verify-chip verify-btn-card verify-pill-card active" data-verify="qr">
+                  <input type="radio" name="verifyMethod" value="qr" checked class="verify-radio">
+                  <span class="verify-glyph">📷</span>
+                  <div class="verify-meta">
+                    <strong>Kitchen QR Terminal</strong>
+                    <small>Scan code on kettle or bathroom mirror</small>
+                  </div>
+                </label>
+
+                <label class="verify-chip verify-btn-card verify-pill-card" data-verify="photo">
+                  <input type="radio" name="verifyMethod" value="photo" class="verify-radio">
+                  <span class="verify-glyph">☕</span>
+                  <div class="verify-meta">
+                    <strong>Kettle / Sink Photo</strong>
+                    <small>AI vision validates steam & location</small>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Primary Action Button -->
+            <div class="instrument-action">
+              <button type="button" class="btn btn-primary btn-block btn-commit" id="saveAlarmBtn">
+                <span id="saveBtnText">LOCK IN STAKE (£10.00 COMMITTED)</span>
+              </button>
+              
+              <div class="action-subtext">
+                <span>🔒 5-minute grace period applies upon morning alarm trigger.</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Minimalist Live Simulator Bar -->
+          <div class="simulator-trigger-bar">
+            <button type="button" class="btn btn-emergency-minimal" id="triggerAlarmSimBtn">
+              <span class="urgent-dot"></span>
+              <span>Test Morning Alarm Simulator (7:30 AM Wake-Up)</span>
+            </button>
+            <button type="button" class="hidden" id="previewLaunchSimBtn"></button>
+          </div>
+
+          <!-- Hidden elements required for JS state preview bindings -->
+          <div class="hidden">
+            <span id="previewTime">07:30 AM</span>
+            <span id="previewStake">£10.00</span>
+            <span id="previewVerify">Kitchen QR</span>
+            <div id="previewDestBox">
+              <span id="previewDestIcon">💳</span>
+              <span id="previewDestTitle">Flatmate Jamie</span>
+              <span id="previewDestSub">Will receive £10.00 via Monzo</span>
+            </div>
+          </div>
+
+          <!-- Minimalist 3-Step Protocol Strip -->
+          <div class="protocol-strip">
+            <div class="protocol-item">
+              <span class="p-num">1</span>
+              <span>Alarm rings at 07:30 AM</span>
+            </div>
+            <span class="p-arrow">→</span>
+            <div class="protocol-item">
+              <span class="p-num">2</span>
+              <span>5-minute grace clock ticks</span>
+            </div>
+            <span class="p-arrow">→</span>
+            <div class="protocol-item">
+              <span class="p-num">3</span>
+              <span>Scan kitchen QR or lose £10</span>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ==============================================
+           TAB 2: STREAKS & SAVINGS (MINIMALIST MATRIX)
+           ============================================== -->
+      <section class="tab-pane" id="tab-streak">
+        
+        <div class="tab-inner-container">
+          <div class="section-title-wrap">
+            <h2 class="section-headline">Streaks & Protected Capital</h2>
+            <p class="section-sub">Total capital defended by waking up on time and outsmarting the snooze button.</p>
+          </div>
+
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <span class="metric-tag">PROTECTED</span>
+              <div class="metric-value text-emerald" id="statProtected">£140.00</div>
+              <div class="metric-caption">14 wake-ups on-time</div>
+            </div>
+
+            <div class="metric-card">
+              <span class="metric-tag">ACTIVE STREAK</span>
+              <div class="metric-value text-amber" id="statStreak">14 Days</div>
+              <div class="metric-caption">Personal best: 21 days</div>
+            </div>
+
+            <div class="metric-card">
+              <span class="metric-tag">FORFEITED</span>
+              <div class="metric-value text-danger" id="statForfeited">£15.00</div>
+              <div class="metric-caption">2 lifetime snoozes</div>
+            </div>
+
+            <div class="metric-card">
+              <span class="metric-tag">PUB TAB DONATED</span>
+              <div class="metric-value text-beer" id="statPubDonated">£10.00</div>
+              <div class="metric-caption">Bought 2 pints for flat</div>
+            </div>
+          </div>
+
+          <!-- 30-Day Matrix -->
+          <div class="card clean-card">
+            <div class="clean-card-header">
+              <div>
+                <h3 class="card-title">30-Day Discipline Matrix</h3>
+                <p class="card-desc">Green = Verified Out of Bed • Red = Snooze Forfeited</p>
+              </div>
+              <div class="calendar-legend">
+                <span class="legend-dot green"></span> Verified
+                <span class="legend-dot red"></span> Forfeited
+                <span class="legend-dot gray"></span> Upcoming
+              </div>
+            </div>
+
+            <div class="calendar-grid" id="streakCalendarGrid">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+
+          <!-- Audit Ledger -->
+          <div class="card clean-card">
+            <div class="clean-card-header">
+              <div>
+                <h3 class="card-title">Audit Ledger</h3>
+                <p class="card-desc">Complete immutable record of wake verifications and transfers</p>
+              </div>
+              <button class="btn btn-secondary btn-sm" id="exportAuditBtn">Export CSV</button>
+            </div>
+
+            <div class="audit-table-wrapper">
+              <table class="audit-table">
+                <thead>
+                  <tr>
+                    <th>Date & Time</th>
+                    <th>Mission</th>
+                    <th>Method</th>
+                    <th>Outcome</th>
+                    <th>Beneficiary</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="auditTableBody">
+                  <!-- Populated via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ==============================================
+           TAB 3: FLATMATE WAR ROOM & BEER POT
+           ============================================== -->
+      <section class="tab-pane" id="tab-leaderboard">
+        
+        <div class="tab-inner-container">
+          <div class="section-title-wrap">
+            <h2 class="section-headline">Flat 4B War Room & Beer Pot</h2>
+            <p class="section-sub">Funded exclusively by flatmates who hit snooze and couldn't leave their beds.</p>
+          </div>
+
+          <div class="grid-2-col">
+            
+            <!-- Beer Pot Card -->
+            <div class="card beer-hero-card">
+              <span class="hero-tag">COMMUNAL FRIDAY POT</span>
+              <div class="pot-amount-hero">
+                <span class="curr">£</span>
+                <span class="val" id="potDisplayAmount">45.00</span>
+              </div>
+              <div class="pot-pints-sub" id="potBeersCalc">≈ 9 Pints of Camden Hells 🍻</div>
+
+              <div class="clean-progress-bar">
+                <div class="progress-fill pot-progress-fill" style="width: 75%;"></div>
+              </div>
+
+              <div class="pot-button-row">
+                <button class="btn btn-primary btn-block" id="addSimulatedSnoozeBtn">
+                  🍺 Simulate Flatmate Snooze (+£5)
+                </button>
+                <button class="btn btn-secondary btn-block" id="claimPotBtn">
+                  View Settlement
+                </button>
+              </div>
+
+              <div class="feed-box">
+                <div class="feed-title">RECENT ACTIVITY</div>
+                <div class="activity-list" id="flatActivityFeed">
+                  <!-- Populated via JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Leaderboard Card -->
+            <div class="card clean-card">
+              <div class="clean-card-header">
+                <div>
+                  <h3 class="card-title">Peer Leaderboard</h3>
+                  <p class="card-desc">Ranked by discipline and capital protected</p>
+                </div>
+                <button class="btn btn-sm btn-secondary" id="inviteFlatmateBtn">+ Invite</button>
+              </div>
+
+              <div class="leaderboard-list" id="leaderboardList">
+                <!-- Populated via JS -->
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ==============================================
+           TAB 4: KITCHEN QR CODE STATION
+           ============================================== -->
+      <section class="tab-pane" id="tab-station">
+        
+        <div class="tab-inner-container">
+          <div class="section-title-wrap">
+            <h2 class="section-headline">Official Kitchen Terminal QR</h2>
+            <p class="section-sub">Print and tape this high-contrast terminal code at least 15 paces away from your bed.</p>
+          </div>
+
+          <div class="qr-station-layout">
+            <div class="card clean-card qr-display-card">
+              <div class="qr-white-frame">
+                <div class="qr-canvas-holder" id="qrCanvasHolder">
+                  <!-- Generated via JS -->
+                </div>
+                <div class="qr-meta-text">
+                  <div class="qr-terminal-name">TERMINAL: FLAT4B-KITCHEN-KETTLE-01</div>
+                  <div class="qr-terminal-hash">WAKESTAKE-SECURE-99281-DISARM</div>
+                </div>
+              </div>
+
+              <div class="qr-btn-row">
+                <button class="btn btn-primary" id="printQrBtn">🖨️ Print Kitchen QR Sign</button>
+                <button class="btn btn-secondary" id="testScanQrBtn">📷 Test Camera Scanner</button>
+              </div>
+            </div>
+
+            <div class="card clean-card qr-instructions-card">
+              <h3 class="card-title">Cheat-Proof Protocol</h3>
+              <div class="rules-list">
+                <div class="rule-block">
+                  <span class="rule-bullet">01</span>
+                  <div>
+                    <strong>Mount Next to Your Kettle or Sink</strong>
+                    <p>Must be at least 15 paces away from your bed to break morning sleep inertia.</p>
+                  </div>
+                </div>
+                <div class="rule-block">
+                  <span class="rule-bullet">02</span>
+                  <div>
+                    <strong>Tape Permanently</strong>
+                    <p>Stick it to your fridge or kettle base. Keeping it on your bedside table defeats the purpose.</p>
+                  </div>
+                </div>
+                <div class="rule-block">
+                  <span class="rule-bullet">03</span>
+                  <div>
+                    <strong>5-Minute Disarm Window</strong>
+                    <p>When the alarm screams at 07:30 AM, walk straight to your kettle and scan to release your £10 stake.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ==============================================
+           TAB 5: BUSINESS MODEL & PRO TIERS
+           ============================================== -->
+      <section class="tab-pane" id="tab-pro">
+        
+        <div class="tab-inner-container">
+          <div class="section-title-wrap">
+            <h2 class="section-headline">Transparent Economics</h2>
+            <p class="section-sub">WakeStake is 100% free if you wake up on time. We only monetize when you snooze.</p>
+          </div>
+
+          <div class="pricing-grid">
+            <div class="pricing-card">
+              <span class="card-tag">CORE ENGINE</span>
+              <h3 class="tier-name">10% Platform Fee</h3>
+              <div class="tier-price">10% <small>on forfeited stakes only</small></div>
+              <p class="tier-desc">If you wake up on time, WakeStake is completely free. 90% goes to your beneficiary, 10% supports our servers.</p>
+              
+              <ul class="tier-features">
+                <li>✓ Instant Monzo routing</li>
+                <li>✓ Basic Kitchen QR disarm</li>
+                <li>✓ 1 Active flatmate leaderboard</li>
+              </ul>
+            </div>
+
+            <div class="pricing-card featured-tier">
+              <span class="card-tag popular">POPULAR WITH STUDENT FLATS</span>
+              <h3 class="tier-name">WakeStake Pro</h3>
+              <div class="tier-price">£2.99 <small>/ month</small></div>
+              <p class="tier-desc">The ultimate anti-snooze suite for high-stakes exam terms and inter-dorm rivalries.</p>
+
+              <button class="btn btn-primary btn-block" id="upgradeProBtn">
+                Start 14-Day Free Trial
+              </button>
+
+              <ul class="tier-features">
+                <li>✓ <strong>House Rivalry Pots:</strong> Pit Flat 4B against Flat 2A</li>
+                <li>✓ <strong>Dual GPS Geo-Fence:</strong> Verifies you walked &gt;30m from bed</li>
+                <li>✓ <strong>AI Computer Vision Kettle Scanner:</strong> Real-time steam & sink validation</li>
+                <li>✓ <strong>Automated WhatsApp Shame Bot:</strong> Posts clips into flat chat</li>
+              </ul>
+            </div>
+
+            <div class="pricing-card">
+              <span class="card-tag">CAMPUS & HOUSING</span>
+              <h3 class="tier-name">Campus Hall Pass</h3>
+              <div class="tier-price">£49 <small>/ term per dorm</small></div>
+              <p class="tier-desc">For student halls, sports teams, and society committees wanting 100% morning attendance.</p>
+
+              <button class="btn btn-secondary btn-block" id="dormDemoBtn">
+                Book Campus Demo
+              </button>
+
+              <ul class="tier-features">
+                <li>✓ Unlimited student accounts</li>
+                <li>✓ 9 AM lecture attendance verification</li>
+                <li>✓ Dorm vs Dorm trophy</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ==============================================
+       EMERGENCY MORNING ALARM TAKEOVER MODAL
+       ============================================== -->
+  <div class="alarm-takeover-overlay" id="alarmModal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="emergency-hud-container">
+      
+      <div class="hazard-line top"></div>
+      <div class="hazard-line bottom"></div>
+
+      <div class="emergency-header">
+        <span class="emergency-pill animate-flash">⚠️ EMERGENCY PROTOCOL ACTIVE</span>
+        <div class="alarm-mission-tag" id="activeAlarmReason">Econ 201 Midterm — Lecture Theatre A</div>
+      </div>
+
+      <div class="alarm-digital-clock" id="activeClockTime">07:30:00</div>
+
+      <div class="countdown-hero-card">
+        <div class="countdown-title">GRACE PERIOD TICKING — MONEY AT RISK</div>
+        
+        <div class="at-risk-money-row">
+          <span class="at-risk-currency">£</span>
+          <span class="at-risk-amount" id="activeStakeAmt">10.00</span>
+        </div>
+
+        <div class="timer-digits-box">
+          <div class="digits" id="graceTimerDigits">04:59</div>
+          <div class="subtext">BEFORE AUTOMATIC FORFEIT TRANSFER</div>
+        </div>
+
+        <div class="grace-progress-track">
+          <div class="grace-progress-bar" id="graceProgressBar" style="width: 100%;"></div>
+        </div>
+
+        <div class="forfeit-warning-box" id="activeTargetWarning">
+          ⚠️ If timer expires or you snooze, £10.00 transfers immediately to:
+          <strong id="activeBeneficiaryName">Flatmate Jamie (@jamie_flat4) via Monzo</strong>
+        </div>
+      </div>
+
+      <div class="emergency-controls">
+        <button type="button" class="btn btn-success btn-huge pulse-green" id="openDisarmModalBtn">
+          <span>I'M OUT OF BED — DISARM ALARM</span>
+        </button>
+
+        <button type="button" class="btn btn-snooze-penalty" id="snoozePenaltyBtn">
+          <div class="snooze-row">
+            <span>💤 SNOOZE 5 MINUTES</span>
+            <span class="cost-badge">COSTS £10.00 NOW</span>
+          </div>
+          <div class="snooze-sub">
+            Warning: Instantly charges your card £10.00 and routes it to <span id="snoozeDestLabel">Flatmate Jamie</span>.
+          </div>
+        </button>
+      </div>
+
+      <div class="emergency-footer">
+        <button class="btn btn-ghost btn-sm" id="testMuteBtn">
+          🔊 Sound Playing (Click to Silence)
+        </button>
+        <button class="btn btn-ghost btn-sm" id="closeEmergencyModalBtn">
+          ✕ Exit Demo
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==============================================
+       DISARM VERIFICATION MODAL
+       ============================================== -->
+  <div class="disarm-modal-overlay" id="disarmModal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="disarm-card clean-card">
+      <div class="disarm-header">
+        <div>
+          <h3 class="disarm-title">Verify You Are At Your Kettle / Sink</h3>
+          <p class="disarm-sub">Complete verification to protect your <strong id="verifyStakeLabel">£10.00</strong> stake.</p>
+        </div>
+        <button class="modal-close-btn" id="closeDisarmBtn">&times;</button>
+      </div>
+
+      <div class="verify-mode-tabs">
+        <button class="verify-tab active" id="modeQrTab">📷 Kitchen QR Terminal</button>
+        <button class="verify-tab" id="modePhotoTab">☕ Kettle / Sink Photo</button>
+      </div>
+
+      <!-- Panel 1: QR Scanner -->
+      <div class="verify-panel active" id="qrVerifyPanel">
+        <div class="viewfinder-box">
+          <video id="webcamVideo" autoplay playsinline muted class="camera-stream hidden"></video>
+          <canvas id="qrCaptureCanvas" class="hidden"></canvas>
+          
+          <div class="reticle-box">
+            <div class="laser-line"></div>
+          </div>
+
+          <div class="viewfinder-placeholder" id="viewfinderPlaceholder">
+            <div class="placeholder-icon">📷</div>
+            <div class="placeholder-text">Align Kitchen QR Code Inside Box</div>
+            <div class="placeholder-status" id="qrScannerStatus">Ready to scan terminal</div>
+          </div>
+        </div>
+
+        <div class="scanner-btn-group">
+          <button class="btn btn-primary btn-block" id="simulateQrScanSuccessBtn">
+            ⚡ Scan Kettle QR Terminal Now (Verify & Disarm)
+          </button>
+          <button class="btn btn-secondary btn-sm btn-block" id="toggleWebcamBtn">
+            Enable Physical Webcam
+          </button>
+        </div>
+      </div>
+
+      <!-- Panel 2: Photo Evidence -->
+      <div class="verify-panel" id="photoVerifyPanel">
+        <div class="photo-preview-box">
+          <div class="photo-preview-area" id="photoPreviewArea">
+            <div class="photo-graphic-kettle" id="kettleGraphic">
+              <svg viewBox="0 0 200 200" class="kettle-svg">
+                <rect x="70" y="170" width="60" height="12" rx="4" fill="#3A4454" />
+                <path d="M60 170 C55 120, 65 70, 95 65 L105 65 C135 70, 145 120, 140 170 Z" fill="url(#kettleGrad)" />
+                <path d="M135 85 C165 95, 175 140, 138 155" fill="none" stroke="#2D3748" stroke-width="12" stroke-linecap="round" />
+                <path d="M65 90 L40 75 L45 70 L72 82 Z" fill="#4A5568" />
+                <ellipse cx="100" cy="65" rx="20" ry="6" fill="#2D3748" />
+                <circle cx="100" cy="56" r="6" fill="#ED8936" />
+                <path class="steam-line steam-1" d="M40 68 C35 55, 45 45, 38 35" fill="none" stroke="#A0AEC0" stroke-width="3" stroke-linecap="round" stroke-dasharray="4 4" />
+                <path class="steam-line steam-2" d="M46 62 C42 50, 52 40, 48 30" fill="none" stroke="#CBD5E0" stroke-width="3" stroke-linecap="round" stroke-dasharray="4 4" />
+                <defs>
+                  <linearGradient id="kettleGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#E2E8F0" />
+                    <stop offset="50%" stop-color="#A0AEC0" />
+                    <stop offset="100%" stop-color="#4A5568" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <div class="photo-meta" id="photoMetaLabel">Sample Evidence: Electric Kettle on Kitchen Counter</div>
+          </div>
+
+          <div class="ai-analysis-output hidden" id="aiAnalysisOutput">
+            <div class="ai-step" id="aiStep1">🔍 Geometry analysis: Stainless steel cylinder found...</div>
+            <div class="ai-step" id="aiStep2">☕ Spout & steam signature: Verified 98.4% match</div>
+            <div class="ai-step" id="aiStep3">📍 Location signature: Kitchen countertop confirmed!</div>
+          </div>
+
+          <div class="photo-action-buttons">
+            <button class="btn btn-primary btn-block" id="runAiPhotoVerificationBtn">
+              🧠 Run Neural Verification on Kettle Photo
+            </button>
+            <label class="btn btn-secondary btn-sm btn-block upload-btn-label">
+              <span>Upload Custom Photo</span>
+              <input type="file" id="userPhotoInput" accept="image/*" class="hidden">
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Celebration Modal -->
+  <div class="celebration-overlay" id="celebrationModal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="celebration-card clean-card">
+      <div class="confetti-emoji">🎉 🛡️ ☕</div>
+      <h3 class="celebration-title">STAKE PROTECTED</h3>
+      <div class="celebration-amount text-emerald">+£<span id="savedStakeDisplay">10.00</span> Saved</div>
+      <p class="celebration-message">Verification confirmed at <strong id="disarmTimestamp">07:31 AM</strong>. Your money is safely back in your account, and your streak is alive.</p>
+
+      <div class="celebration-streak-box">
+        <div class="streak-icon">🔥</div>
+        <div>
+          <div class="streak-title">New Streak: <strong id="newStreakDisplay">15 Days</strong></div>
+          <div class="streak-sub">Flat 4B Leaderboard rank maintained!</div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-block" id="dismissCelebrationBtn">
+        Back to Dashboard
+      </button>
+    </div>
+  </div>
+
+  <!-- Forfeit Modal -->
+  <div class="forfeit-overlay" id="forfeitModal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="forfeit-card clean-card">
+      <div class="forfeit-skull">💸</div>
+      <h3 class="forfeit-title">STAKE FORFEITED</h3>
+      <div class="forfeit-amount text-danger">-£<span id="forfeitStakeDisplay">10.00</span></div>
+
+      <div class="receipt-box">
+        <div class="receipt-row">
+          <span>Date & Time</span>
+          <span id="receiptTimestamp">17 Oct 2026, 07:35 AM</span>
+        </div>
+        <div class="receipt-row">
+          <span>Reason</span>
+          <span id="receiptReason">Snooze penalty / Grace expired</span>
+        </div>
+        <div class="receipt-row highlight">
+          <span>Beneficiary Transferred</span>
+          <strong id="receiptBeneficiary">Jamie (@jamie_flat4) Monzo</strong>
+        </div>
+        <div class="receipt-row">
+          <span>Status</span>
+          <span class="badge badge-danger">SETTLED VIA FASTER PAYMENTS</span>
+        </div>
+      </div>
+
+      <div class="forfeit-social-alert">
+        <span>📢 Flat WhatsApp chat notified: <em>"Alex just snoozed. £10.00 transferred! 🍺"</em></span>
+      </div>
+
+      <button class="btn btn-secondary btn-block" id="dismissForfeitBtn">
+        Accept Loss & Return
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Script -->
+  <script src="app.js"></script>
+</body>
+</html>
