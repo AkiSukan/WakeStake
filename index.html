@@ -1,19 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <title>WakeStake — The Loss-Aversion Alarm Clock That Actually Gets You Up</title>
-  <meta name="description" content="A behavioral-economics alarm where you put real money on the line to wake up. Scan your kitchen QR within 5 minutes or forfeit your stake.">
+  <meta name="description"
+    content="A behavioral-economics alarm where you put real money on the line to wake up. Scan your kitchen QR within 5 minutes or forfeit your stake.">
   <meta name="theme-color" content="#07090D">
-  
+
   <!-- Modern Clean Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+    rel="stylesheet">
+
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body class="theme-dark">
   <!-- Dynamic Ambient Lighting Gradients -->
   <div class="ambient-glow glow-red"></div>
@@ -31,13 +36,14 @@
       <span class="status-time" id="deviceStatusTime">07:25</span>
       <div class="status-icons">
         <svg class="icon-signal" viewBox="0 0 16 12" fill="currentColor">
-          <rect x="0" y="9" width="2.5" height="3" rx="0.5"/>
-          <rect x="4" y="6" width="2.5" height="6" rx="0.5"/>
-          <rect x="8" y="3" width="2.5" height="9" rx="0.5"/>
-          <rect x="12" y="0" width="2.5" height="12" rx="0.5"/>
+          <rect x="0" y="9" width="2.5" height="3" rx="0.5" />
+          <rect x="4" y="6" width="2.5" height="6" rx="0.5" />
+          <rect x="8" y="3" width="2.5" height="9" rx="0.5" />
+          <rect x="12" y="0" width="2.5" height="12" rx="0.5" />
         </svg>
         <svg class="icon-wifi" viewBox="0 0 16 12" fill="currentColor">
-          <path d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3zM2.5 5.5a7.5 7.5 0 0111 0l-1.4 1.4a5.5 5.5 0 00-8.2 0L2.5 5.5zM0 3a11 11 0 0116 0l-1.4 1.4a9 9 0 00-13.2 0L0 3z"/>
+          <path
+            d="M8 9.5a1.5 1.5 0 100 3 1.5 1.5 0 000-3zM2.5 5.5a7.5 7.5 0 0111 0l-1.4 1.4a5.5 5.5 0 00-8.2 0L2.5 5.5zM0 3a11 11 0 0116 0l-1.4 1.4a9 9 0 00-13.2 0L0 3z" />
         </svg>
         <div class="status-battery">
           <div class="battery-fill"></div>
@@ -49,7 +55,7 @@
   <!-- Header Navigation (Precision Glassmorphism) -->
   <header class="app-header">
     <div class="header-container">
-      
+
       <!-- Brand Logo & Identity -->
       <div class="brand" title="WakeStake — Behavioral Economics Alarm">
         <div class="brand-icon-wrap">
@@ -87,7 +93,9 @@
         </button>
         <button class="tab-link nav-pill" data-tab="tab-streak" role="tab" aria-selected="false">
           <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3.5z"></path>
+            <path
+              d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3.5z">
+            </path>
           </svg>
           <span>Streaks</span>
           <span class="tab-badge badge-green" id="navStreakBadge">14d</span>
@@ -103,7 +111,9 @@
         </button>
         <button class="tab-link nav-pill" data-tab="tab-pro" role="tab" aria-selected="false">
           <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            <polygon
+              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+            </polygon>
           </svg>
           <span>Pro</span>
         </button>
@@ -164,9 +174,9 @@
            TAB 1: ALARM & PLEDGE SETUP (SCULPTURAL PRECISION)
            ============================================== -->
       <section class="tab-pane active" id="tab-alarm">
-        
+
         <div class="alarm-hero-container">
-          
+
           <!-- Hero Header -->
           <div class="hero-minimal-header">
             <div class="hero-badge-wrap">
@@ -174,12 +184,13 @@
               <span class="shield-badge">🛡️ Loss Aversion Engine</span>
             </div>
             <h1 class="hero-headline">Put skin in the game. <span class="text-gradient">Wake up on time.</span></h1>
-            <p class="hero-caption">Snoozing has zero immediate consequence. Put real money on the line and verify at your kitchen kettle or pay the forfeit to your flatmates.</p>
+            <p class="hero-caption">Snoozing has zero immediate consequence. Put real money on the line and verify at
+              your kitchen kettle or pay the forfeit to your flatmates.</p>
           </div>
 
           <!-- The Minimalist Precision Instrument Card -->
           <div class="card instrument-card">
-            
+
             <!-- Section 1: Wake Time -->
             <div class="instrument-row">
               <div class="row-label-wrap">
@@ -191,7 +202,8 @@
               <div class="time-instrument-box">
                 <div class="time-digits-wrap">
                   <div class="time-input-container">
-                    <input type="time" id="alarmTimeInput" value="07:30" class="minimal-time-input" required aria-label="Alarm Target Time">
+                    <input type="time" id="alarmTimeInput" value="07:30" class="minimal-time-input" required
+                      aria-label="Alarm Target Time">
                     <span class="time-clock-icon">🕒</span>
                   </div>
                   <span class="period-pill" id="timePeriodTag">Tomorrow Morning</span>
@@ -200,10 +212,11 @@
                 <div class="time-controls-cluster">
                   <!-- Quick Stepper Adjusters -->
                   <div class="stepper-group" role="group" aria-label="Adjust Time">
-                    <button type="button" class="stepper-btn" id="timeMinus15Btn" title="Subtract 15 minutes">-15m</button>
+                    <button type="button" class="stepper-btn" id="timeMinus15Btn"
+                      title="Subtract 15 minutes">-15m</button>
                     <button type="button" class="stepper-btn" id="timePlus15Btn" title="Add 15 minutes">+15m</button>
                   </div>
-                  
+
                   <!-- Preset Chips -->
                   <div class="preset-chips">
                     <button type="button" class="chip" data-time="06:30">06:30 <small>Gym</small></button>
@@ -216,7 +229,9 @@
               <div class="mission-input-wrap">
                 <div class="mission-input-inner">
                   <span class="mission-icon">🎯</span>
-                  <input type="text" id="alarmLabelInput" class="minimal-text-input" value="Econ 201 Midterm — Lecture Theatre A" placeholder="What is getting you up? (Mission / Reason)">
+                  <input type="text" id="alarmLabelInput" class="minimal-text-input"
+                    value="Econ 201 Midterm — Lecture Theatre A"
+                    placeholder="What is getting you up? (Mission / Reason)">
                 </div>
               </div>
             </div>
@@ -265,7 +280,8 @@
                 </div>
 
                 <div class="slider-box">
-                  <input type="range" id="stakeSlider" min="2" max="100" step="1" value="10" class="minimal-slider" aria-label="Stake Amount Slider">
+                  <input type="range" id="stakeSlider" min="2" max="100" step="1" value="10" class="minimal-slider"
+                    aria-label="Stake Amount Slider">
                   <div class="slider-labels">
                     <span>£2</span>
                     <span>£25</span>
@@ -276,7 +292,9 @@
                 </div>
 
                 <div class="psych-micro-note">
-                  <span>🧠 <strong>Kahneman-Tversky Loss Aversion Principle:</strong> Losing <span id="calloutStake">£10.00</span> hurts 2.5× more than gaining £10. Your brain's amygdala will forcefully override your sleep inertia to protect your capital.</span>
+                  <span>🧠 <strong>Kahneman-Tversky Loss Aversion Principle:</strong> Losing <span
+                      id="calloutStake">£10.00</span> hurts 2.5× more than gaining £10. Your brain's amygdala will
+                    forcefully override your sleep inertia to protect your capital.</span>
                 </div>
               </div>
             </div>
@@ -301,7 +319,8 @@
                   <p class="dest-desc">Instant Faster Payment transfer to buy their lunch.</p>
                   <div class="dest-input-wrap">
                     <span class="prefix">monzo.me/</span>
-                    <input type="text" id="flatmateMonzoTag" class="dest-subinput" value="jamie_flat4" placeholder="flatmate_tag" aria-label="Monzo Tag">
+                    <input type="text" id="flatmateMonzoTag" class="dest-subinput" value="jamie_flat4"
+                      placeholder="flatmate_tag" aria-label="Monzo Tag">
                   </div>
                 </label>
 
@@ -384,7 +403,7 @@
                 </svg>
                 <span id="saveBtnText">LOCK IN STAKE (£10.00 COMMITTED)</span>
               </button>
-              
+
               <div class="action-subtext">
                 <span>🔒 Smart escrow contract armed. 5-minute grace period applies upon morning alarm trigger.</span>
               </div>
@@ -472,12 +491,13 @@
            TAB 2: STREAKS & SAVINGS (MINIMALIST MATRIX)
            ============================================== -->
       <section class="tab-pane" id="tab-streak">
-        
+
         <div class="tab-inner-container">
           <div class="section-title-wrap">
             <div class="section-badge">CAPITAL PROTECTION LEDGER</div>
             <h2 class="section-headline">Streaks & Defended Wealth</h2>
-            <p class="section-sub">Total capital successfully guarded by breaking sleep inertia and outsmarting the snooze button.</p>
+            <p class="section-sub">Total capital successfully guarded by breaking sleep inertia and outsmarting the
+              snooze button.</p>
           </div>
 
           <!-- 4 Core Metric Cards -->
@@ -528,7 +548,8 @@
             <div class="clean-card-header">
               <div>
                 <h3 class="card-title">30-Day Discipline Heatmap</h3>
-                <p class="card-desc">Visual history of verified physical kitchen disarms vs forfeited snooze penalties</p>
+                <p class="card-desc">Visual history of verified physical kitchen disarms vs forfeited snooze penalties
+                </p>
               </div>
               <div class="calendar-legend">
                 <span class="legend-item"><span class="legend-dot green"></span> Verified Out of Bed</span>
@@ -552,7 +573,8 @@
             <div class="clean-card-header">
               <div>
                 <h3 class="card-title">Immutable Verification Ledger</h3>
-                <p class="card-desc">Complete cryptographic record of wake timestamps, disarm methods and Faster Payments routing</p>
+                <p class="card-desc">Complete cryptographic record of wake timestamps, disarm methods and Faster
+                  Payments routing</p>
               </div>
               <button class="btn btn-secondary btn-sm" id="exportAuditBtn">
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
@@ -590,16 +612,17 @@
            TAB 3: FLATMATE WAR ROOM & BEER POT
            ============================================== -->
       <section class="tab-pane" id="tab-leaderboard">
-        
+
         <div class="tab-inner-container">
           <div class="section-title-wrap">
             <div class="section-badge badge-beer">COMMUNAL FLAT TAB</div>
             <h2 class="section-headline">Flat 4B War Room & Beer Kitty</h2>
-            <p class="section-sub">Funded exclusively by flatmates who hit snooze and couldn't leave their beds on time.</p>
+            <p class="section-sub">Funded exclusively by flatmates who hit snooze and couldn't leave their beds on time.
+            </p>
           </div>
 
           <div class="grid-2-col">
-            
+
             <!-- Beer Pot Card -->
             <div class="card beer-hero-card">
               <div class="beer-foam-header">
@@ -656,7 +679,8 @@
               </div>
 
               <div class="leaderboard-footer-note">
-                <span>💡 <strong>Flat Rule:</strong> Whoever finishes the week with 0 forfeits gets their drinks bought by the bottom snoozer.</span>
+                <span>💡 <strong>Flat Rule:</strong> Whoever finishes the week with 0 forfeits gets their drinks bought
+                  by the bottom snoozer.</span>
               </div>
             </div>
 
@@ -669,12 +693,13 @@
            TAB 4: KITCHEN QR CODE STATION
            ============================================== -->
       <section class="tab-pane" id="tab-station">
-        
+
         <div class="tab-inner-container">
           <div class="section-title-wrap">
             <div class="section-badge">PHYSICAL ESCROW STATION</div>
             <h2 class="section-headline">Official Kitchen QR Terminal</h2>
-            <p class="section-sub">Print and tape this high-contrast terminal code at least 15 paces away from your bed.</p>
+            <p class="section-sub">Print and tape this high-contrast terminal code at least 15 paces away from your bed.
+            </p>
           </div>
 
           <div class="qr-station-layout">
@@ -715,35 +740,40 @@
             <!-- Instructions Card -->
             <div class="card clean-card qr-instructions-card">
               <h3 class="card-title">Anti-Cheat Engineering Protocol</h3>
-              <p class="card-desc">Designed according to Stanford sleep research to completely shatter sleep inertia.</p>
+              <p class="card-desc">Designed according to Stanford sleep research to completely shatter sleep inertia.
+              </p>
 
               <div class="rules-list">
                 <div class="rule-block">
                   <span class="rule-bullet">01</span>
                   <div>
                     <strong>Mount 15 Paces Away from Bed</strong>
-                    <p>Mount on your kitchen kettle, fridge, or bathroom mirror. Walking 15 paces forces blood flow to your prefrontal cortex, extinguishing the urge to sleep.</p>
+                    <p>Mount on your kitchen kettle, fridge, or bathroom mirror. Walking 15 paces forces blood flow to
+                      your prefrontal cortex, extinguishing the urge to sleep.</p>
                   </div>
                 </div>
                 <div class="rule-block">
                   <span class="rule-bullet">02</span>
                   <div>
                     <strong>Tape Permanently with Clear Tape</strong>
-                    <p>Stick it down securely. Keeping a printed code or phone photo on your bedside table defeats the biological purpose and triggers automatic flatmate shame.</p>
+                    <p>Stick it down securely. Keeping a printed code or phone photo on your bedside table defeats the
+                      biological purpose and triggers automatic flatmate shame.</p>
                   </div>
                 </div>
                 <div class="rule-block">
                   <span class="rule-bullet">03</span>
                   <div>
                     <strong>5-Minute Disarm Window</strong>
-                    <p>When the alarm blares at 07:30 AM, walk straight to your kettle and scan this code to unlock and return your committed £10.00 stake.</p>
+                    <p>When the alarm blares at 07:30 AM, walk straight to your kettle and scan this code to unlock and
+                      return your committed £10.00 stake.</p>
                   </div>
                 </div>
               </div>
 
               <div class="qr-tip-box">
                 <span class="tip-icon">💡</span>
-                <span><strong>Pro-Tip:</strong> Place your electric kettle next to this code. Put water in it the night before so you start boiling coffee the instant you disarm!</span>
+                <span><strong>Pro-Tip:</strong> Place your electric kettle next to this code. Put water in it the night
+                  before so you start boiling coffee the instant you disarm!</span>
               </div>
             </div>
           </div>
@@ -755,12 +785,13 @@
            TAB 5: BUSINESS MODEL & PRO TIERS
            ============================================== -->
       <section class="tab-pane" id="tab-pro">
-        
+
         <div class="tab-inner-container">
           <div class="section-title-wrap">
             <div class="section-badge">ETHICAL MONETIZATION</div>
             <h2 class="section-headline">Transparent Behavioral Economics</h2>
-            <p class="section-sub">WakeStake is 100% free if you get out of bed on time. We only monetize when you snooze.</p>
+            <p class="section-sub">WakeStake is 100% free if you get out of bed on time. We only monetize when you
+              snooze.</p>
           </div>
 
           <div class="pricing-grid">
@@ -769,8 +800,9 @@
               <span class="card-tag">CORE ENGINE</span>
               <h3 class="tier-name">10% Platform Fee</h3>
               <div class="tier-price">10% <small>on forfeited stakes only</small></div>
-              <p class="tier-desc">If you wake up on time, WakeStake is 100% free forever. 90% goes to your flatmate/charity, 10% supports our servers.</p>
-              
+              <p class="tier-desc">If you wake up on time, WakeStake is 100% free forever. 90% goes to your
+                flatmate/charity, 10% supports our servers.</p>
+
               <ul class="tier-features">
                 <li><span class="check">✓</span> Instant Monzo Faster Payments routing</li>
                 <li><span class="check">✓</span> High-contrast Kitchen QR terminal</li>
@@ -784,7 +816,8 @@
               <span class="card-tag popular">POPULAR WITH STUDENT FLATS</span>
               <h3 class="tier-name">WakeStake Pro</h3>
               <div class="tier-price">£2.99 <small>/ month</small></div>
-              <p class="tier-desc">The ultimate anti-snooze suite for high-stakes exam terms and inter-dorm rivalries.</p>
+              <p class="tier-desc">The ultimate anti-snooze suite for high-stakes exam terms and inter-dorm rivalries.
+              </p>
 
               <button class="btn btn-primary btn-block" id="upgradeProBtn">
                 <span>Start 14-Day Free Trial</span>
@@ -794,7 +827,8 @@
                 <li><span class="check">✓</span> <strong>House Rivalry War Rooms:</strong> Flat 4B vs Flat 2A</li>
                 <li><span class="check">✓</span> <strong>Dual GPS Geo-Fence:</strong> Verifies you walked &gt;30m</li>
                 <li><span class="check">✓</span> <strong>AI Vision Kettle Scanner:</strong> Validates steam & sink</li>
-                <li><span class="check">✓</span> <strong>Automated WhatsApp Shame Bot:</strong> Posts clips into flat chat</li>
+                <li><span class="check">✓</span> <strong>Automated WhatsApp Shame Bot:</strong> Posts clips into flat
+                  chat</li>
               </ul>
             </div>
 
@@ -803,7 +837,8 @@
               <span class="card-tag">CAMPUS & HOUSING</span>
               <h3 class="tier-name">Campus Hall Pass</h3>
               <div class="tier-price">£49 <small>/ term per dorm</small></div>
-              <p class="tier-desc">For student halls, sports teams, and rowing squads wanting 100% morning practice attendance.</p>
+              <p class="tier-desc">For student halls, sports teams, and rowing squads wanting 100% morning practice
+                attendance.</p>
 
               <button class="btn btn-secondary btn-block" id="dormDemoBtn">
                 <span>Book Campus Demo</span>
@@ -829,7 +864,7 @@
        ============================================== -->
   <div class="alarm-takeover-overlay" id="alarmModal" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="emergency-hud-container">
-      
+
       <div class="hazard-line top"></div>
       <div class="hazard-line bottom"></div>
 
@@ -842,7 +877,7 @@
 
       <div class="countdown-hero-card">
         <div class="countdown-title">5-MINUTE GRACE CLOCK TICKING — CAPITAL AT RISK</div>
-        
+
         <div class="at-risk-money-row">
           <span class="at-risk-currency">£</span>
           <span class="at-risk-amount" id="activeStakeAmt">10.00</span>
@@ -902,7 +937,8 @@
       <div class="disarm-header">
         <div>
           <h3 class="disarm-title">Verify You Are At Your Kettle / Sink</h3>
-          <p class="disarm-sub">Complete verification to safely protect your <strong id="verifyStakeLabel">£10.00</strong> stake.</p>
+          <p class="disarm-sub">Complete verification to safely protect your <strong
+              id="verifyStakeLabel">£10.00</strong> stake.</p>
         </div>
         <button class="modal-close-btn" id="closeDisarmBtn" aria-label="Close modal">&times;</button>
       </div>
@@ -917,7 +953,7 @@
         <div class="viewfinder-box">
           <video id="webcamVideo" autoplay playsinline muted class="camera-stream hidden"></video>
           <canvas id="qrCaptureCanvas" class="hidden"></canvas>
-          
+
           <div class="reticle-box">
             <div class="corner-bracket top-left"></div>
             <div class="corner-bracket top-right"></div>
@@ -951,12 +987,15 @@
               <svg viewBox="0 0 200 200" class="kettle-svg">
                 <rect x="70" y="170" width="60" height="12" rx="4" fill="#3A4454" />
                 <path d="M60 170 C55 120, 65 70, 95 65 L105 65 C135 70, 145 120, 140 170 Z" fill="url(#kettleGrad)" />
-                <path d="M135 85 C165 95, 175 140, 138 155" fill="none" stroke="#2D3748" stroke-width="12" stroke-linecap="round" />
+                <path d="M135 85 C165 95, 175 140, 138 155" fill="none" stroke="#2D3748" stroke-width="12"
+                  stroke-linecap="round" />
                 <path d="M65 90 L40 75 L45 70 L72 82 Z" fill="#4A5568" />
                 <ellipse cx="100" cy="65" rx="20" ry="6" fill="#2D3748" />
                 <circle cx="100" cy="56" r="6" fill="#ED8936" />
-                <path class="steam-line steam-1" d="M40 68 C35 55, 45 45, 38 35" fill="none" stroke="#A0AEC0" stroke-width="3" stroke-linecap="round" stroke-dasharray="4 4" />
-                <path class="steam-line steam-2" d="M46 62 C42 50, 52 40, 48 30" fill="none" stroke="#CBD5E0" stroke-width="3" stroke-linecap="round" stroke-dasharray="4 4" />
+                <path class="steam-line steam-1" d="M40 68 C35 55, 45 45, 38 35" fill="none" stroke="#A0AEC0"
+                  stroke-width="3" stroke-linecap="round" stroke-dasharray="4 4" />
+                <path class="steam-line steam-2" d="M46 62 C42 50, 52 40, 48 30" fill="none" stroke="#CBD5E0"
+                  stroke-width="3" stroke-linecap="round" stroke-dasharray="4 4" />
                 <defs>
                   <linearGradient id="kettleGrad" x1="0" y1="0" x2="1" y2="1">
                     <stop offset="0%" stop-color="#E2E8F0" />
@@ -997,7 +1036,8 @@
       <div class="confetti-emoji">🎉 🛡️ ☕</div>
       <h3 class="celebration-title">STAKE PROTECTED</h3>
       <div class="celebration-amount text-emerald">+£<span id="savedStakeDisplay">10.00</span> Saved</div>
-      <p class="celebration-message">Verification confirmed at <strong id="disarmTimestamp">07:31 AM</strong>. Your money is safely back in your account, and your streak is alive.</p>
+      <p class="celebration-message">Verification confirmed at <strong id="disarmTimestamp">07:31 AM</strong>. Your
+        money is safely back in your account, and your streak is alive.</p>
 
       <div class="celebration-streak-box">
         <div class="streak-icon">🔥</div>
@@ -1055,4 +1095,5 @@
   <!-- Core Interactive Logic -->
   <script src="app.js"></script>
 </body>
+
 </html>
