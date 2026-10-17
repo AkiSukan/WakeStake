@@ -267,7 +267,7 @@ body.mode-mobile-frame #mainContainer {
 }
 
 .header-container {
-  max-width: 1140px;
+  max-width: 1360px;
   margin: 0 auto;
   padding: 0 24px;
   display: flex;
@@ -345,6 +345,7 @@ body.mode-mobile-frame #mainContainer {
 /* Segmented Tabs */
 .nav-tabs-bar {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   gap: 3px;
   background: rgba(255, 255, 255, 0.035);
@@ -3598,6 +3599,10 @@ body.theme-light .chip.active small {
   color: #9F1239;
 }
 
+body.theme-light .stake-chip.active {
+  color: #9F1239;
+}
+
 body.theme-light .nav-pill.active {
   background: #E5EAF2;
   color: #172033;
@@ -3627,6 +3632,54 @@ body.theme-light.mode-mobile-frame .app-header {
 .theme-toggle svg {
   width: 16px;
   height: 16px;
+}
+
+.minimal-toggle {
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.minimal-toggle svg {
+  width: 16px;
+  height: 16px;
+}
+
+body.mode-mobile-frame .minimal-toggle-label {
+  display: none;
+}
+
+body.minimal-mode .ambient-glow,
+body.minimal-mode .status-indicator,
+body.minimal-mode .hero-badge-wrap,
+body.minimal-mode .hero-caption,
+body.minimal-mode .sleep-assistant-pill,
+body.minimal-mode .psych-tag,
+body.minimal-mode .loss-equivalent-pill,
+body.minimal-mode .loss-meter-container,
+body.minimal-mode .psych-micro-note,
+body.minimal-mode .protocol-strip,
+body.minimal-mode #navBeerBadge,
+body.minimal-mode #navStreakBadge,
+body.minimal-mode .nav-pill[data-tab="tab-leaderboard"],
+body.minimal-mode .nav-pill[data-tab="tab-streak"],
+body.minimal-mode .nav-pill[data-tab="tab-pro"],
+body.minimal-mode #tab-leaderboard,
+body.minimal-mode #tab-streak,
+body.minimal-mode #tab-pro {
+  display: none !important;
+}
+
+body.minimal-mode .hero-minimal-header {
+  margin-bottom: 16px;
+}
+
+body.minimal-mode .main-content {
+  padding-top: 24px;
+  padding-bottom: 48px;
+}
+
+body.minimal-mode .instrument-card {
+  padding-top: 24px;
 }
 
 body.mode-mobile-frame .reliability-tag,

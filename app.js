@@ -239,6 +239,8 @@
     themeToggleBtn: document.getElementById('themeToggleBtn'),
     themeIconSun: document.querySelector('.theme-icon-sun'),
     themeIconMoon: document.querySelector('.theme-icon-moon'),
+    minimalToggleBtn: document.getElementById('minimalToggleBtn'),
+    minimalToggleLabel: document.getElementById('minimalToggleLabel'),
     soundToggleBtn: document.getElementById('soundToggleBtn'),
     soundIconOn: document.getElementById('soundIconOn'),
     soundIconOff: document.getElementById('soundIconOff'),
@@ -383,8 +385,21 @@
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', isLight ? '#F4F6FA' : '#07090D');
   }
 
+  function setMinimalView(isMinimal) {
+    document.body.classList.toggle('minimal-mode', isMinimal);
+    DOM.minimalToggleBtn.setAttribute('aria-pressed', String(isMinimal));
+    DOM.minimalToggleBtn.setAttribute('aria-label', `Switch to ${isMinimal ? 'full' : 'minimal'} view`);
+    DOM.minimalToggleBtn.title = `Switch to ${isMinimal ? 'full' : 'minimal'} view`;
+    DOM.minimalToggleLabel.textContent = isMinimal ? 'Full' : 'Minimal';
+
+    if (isMinimal && document.querySelector('.tab-pane.active:not(#tab-alarm):not(#tab-station)')) {
+      document.querySelector('.nav-pill[data-tab="tab-alarm"]')?.click();
+    }
+  }
+
   function init() {
     setTheme(localStorage.getItem('wakestake-theme') || 'dark');
+    setMinimalView(localStorage.getItem('wakestake-view') === 'minimal');
     renderTabs();
     renderFormFromState();
     updateThreatPreview();
@@ -1196,6 +1211,12 @@
   // 13. EVENT LISTENERS
   // =========================================================================
   function bindEvents() {
+    DOM.minimalToggleBtn.addEventListener('click', () => {
+      const isMinimal = !document.body.classList.contains('minimal-mode');
+      setMinimalView(isMinimal);
+      localStorage.setItem('wakestake-view', isMinimal ? 'minimal' : 'full');
+    });
+
     DOM.themeToggleBtn.addEventListener('click', () => {
       const nextTheme = document.body.classList.contains('theme-light') ? 'dark' : 'light';
       setTheme(nextTheme);
