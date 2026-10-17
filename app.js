@@ -1238,8 +1238,12 @@
     // View Mode Toggle (Desktop vs Phone Mockup)
     DOM.viewModeBtns.forEach(btn => {
       btn.addEventListener('click', () => {
-        DOM.viewModeBtns.forEach(b => b.classList.remove('active'));
+        DOM.viewModeBtns.forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-pressed', 'false');
+        });
         btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
         const mode = btn.dataset.mode;
         document.body.classList.toggle('mode-mobile-frame', mode === 'mobile');
         showToast(mode === 'mobile' ? 'Switched to Mobile Phone Frame' : 'Command Center View Active', 'toast-info');

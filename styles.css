@@ -536,7 +536,12 @@ body.mode-mobile-frame #mainContainer {
 }
 
 .view-opt.active {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--red-crimson);
+  color: #FFF;
+  box-shadow: 0 2px 8px rgba(255, 43, 78, 0.32), inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.view-opt.active svg {
   color: #FFF;
 }
 
@@ -3606,6 +3611,12 @@ body.theme-light .stake-chip.active {
 body.theme-light .nav-pill.active {
   background: #E5EAF2;
   color: #172033;
+}
+
+body.theme-light .view-opt.active,
+body.theme-light .view-opt.active svg {
+  background: var(--red-crimson);
+  color: #FFFFFF;
 }
 
 body.theme-light .verify-pill-card.active {
