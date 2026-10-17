@@ -19,6 +19,9 @@
       destination: 'monzo', // 'monzo' | 'anticharity' | 'drinks'
       flatmateMonzo: 'jamie_flat4',
       antiCharity: 'millwall',
+      customRecipient: '',
+      customDestination: '',
+      customInstructions: '',
       verifyMethod: 'qr', // 'qr' | 'photo'
       isActive: true
     },
@@ -61,7 +64,10 @@
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        return Object.assign({}, defaultState, JSON.parse(saved));
+        const savedState = JSON.parse(saved);
+        return Object.assign({}, defaultState, savedState, {
+          alarm: Object.assign({}, defaultState.alarm, savedState.alarm || {})
+        });
       }
     } catch (e) {
       console.warn('LocalStorage error, using defaults', e);
@@ -268,6 +274,9 @@
     destRadios: document.querySelectorAll('.dest-radio'),
     flatmateMonzoTag: document.getElementById('flatmateMonzoTag'),
     antiCharitySelect: document.getElementById('antiCharitySelect'),
+    customRecipient: document.getElementById('customRecipient'),
+    customDestination: document.getElementById('customDestination'),
+    customInstructions: document.getElementById('customInstructions'),
     cardPotAmount: document.getElementById('cardPotAmount'),
     verifyChips: document.querySelectorAll('.verify-chip, .verify-btn-card, .verify-pill-card'),
     verifyRadios: document.querySelectorAll('.verify-radio'),
@@ -429,6 +438,9 @@
 
     if (DOM.flatmateMonzoTag) DOM.flatmateMonzoTag.value = state.alarm.flatmateMonzo;
     if (DOM.antiCharitySelect) DOM.antiCharitySelect.value = state.alarm.antiCharity;
+    if (DOM.customRecipient) DOM.customRecipient.value = state.alarm.customRecipient || '';
+    if (DOM.customDestination) DOM.customDestination.value = state.alarm.customDestination || '';
+    if (DOM.customInstructions) DOM.customInstructions.value = state.alarm.customInstructions || '';
 
     // Verify method
     DOM.verifyRadios.forEach(radio => {
@@ -466,6 +478,17 @@
         icon: '☠️',
         title: `${name}`,
         subtitle: `Forfeit penalty sent straight to your sworn enemy's account.`
+      };
+    } else if (dest === 'custom') {
+      const recipient = (DOM.customRecipient ? DOM.customRecipient.value : state.alarm.customRecipient || '').trim();
+      const destination = (DOM.customDestination ? DOM.customDestination.value : state.alarm.customDestination || '').trim();
+      const instructions = (DOM.customInstructions ? DOM.customInstructions.value : state.alarm.customInstructions || '').trim();
+      return {
+        icon: '↗',
+        title: recipient || 'Custom beneficiary',
+        subtitle: destination
+          ? `Route to ${destination}${instructions ? ` · ${instructions}` : ''}`
+          : 'Enter a recipient and destination details.'
       };
     } else {
       return {
@@ -930,7 +953,9 @@
     // Show Forfeit Settlement Receipt Modal
     closeEmergencyModal();
     DOM.forfeitStakeDisplay.textContent = stakeAmt.toFixed(2);
-    DOM.receiptBeneficiary.textContent = ben.title;
+    DOM.receiptBeneficiary.textContent = state.alarm.destination === 'custom' && state.alarm.customDestination
+      ? `${ben.title} (${state.alarm.customDestination})`
+      : ben.title;
     DOM.receiptTimestamp.textContent = `Today, ${timeNow}`;
     DOM.forfeitModal.classList.add('active');
 
@@ -1285,10 +1310,6 @@
     const destCards = document.querySelectorAll('.dest-option-card, .dest-card-clean, .dest-pill-card');
     destCards.forEach(card => {
       card.addEventListener('click', (e) => {
-        // Prevent event duplication from sub-inputs
-        if (e.target.tagName === 'INPUT' && e.target.type !== 'radio' || e.target.tagName === 'SELECT') {
-          return;
-        }
         const radio = card.querySelector('.dest-radio');
         if (radio) {
           radio.checked = true;
@@ -1314,6 +1335,19 @@
       });
     }
 
+    [
+      [DOM.customRecipient, 'customRecipient'],
+      [DOM.customDestination, 'customDestination'],
+      [DOM.customInstructions, 'customInstructions']
+    ].forEach(([input, key]) => {
+      if (input) {
+        input.addEventListener('input', (e) => {
+          state.alarm[key] = e.target.value;
+          updateThreatPreview();
+        });
+      }
+    });
+
     // Verification Chips
     const verifyCards = document.querySelectorAll('.verify-chip, .verify-btn-card, .verify-pill-card');
     verifyCards.forEach(chip => {
@@ -1331,6 +1365,16 @@
 
     // Save Alarm Button
     DOM.saveAlarmBtn.addEventListener('click', () => {
+      if (state.alarm.destination === 'custom') {
+        if (!DOM.customRecipient.value.trim()) {
+          DOM.customRecipient.reportValidity();
+          return;
+        }
+        if (!DOM.customDestination.value.trim()) {
+          DOM.customDestination.reportValidity();
+          return;
+        }
+      }
       saveState();
       sound.init();
       showToast(`🔒 Contract locked! £${state.alarm.stake.toFixed(2)} staked for ${state.alarm.time} AM.`, 'toast-success');

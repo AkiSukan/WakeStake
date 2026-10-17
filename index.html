@@ -307,11 +307,11 @@
               <div class="dest-toggle-group">
                 <!-- Option A: Flatmate Monzo -->
                 <label class="dest-option-card dest-card-clean dest-pill-card active" data-target="monzo">
-                  <input type="radio" name="stakeDestination" value="monzo" checked class="dest-radio">
                   <div class="dest-top-row">
                     <span class="dest-dot monzo-dot"></span>
                     <strong>Flatmate Monzo</strong>
                     <span class="dest-pill-badge monzo-badge">Instant</span>
+                    <input type="radio" name="stakeDestination" value="monzo" checked class="dest-radio" aria-label="Select Flatmate Monzo">
                   </div>
                   <p class="dest-desc">Instant Faster Payment transfer to buy their lunch.</p>
                   <div class="dest-input-wrap">
@@ -323,11 +323,11 @@
 
                 <!-- Option B: Anti-Charity / Sworn Nemesis -->
                 <label class="dest-option-card dest-card-clean dest-pill-card" data-target="anticharity">
-                  <input type="radio" name="stakeDestination" value="anticharity" class="dest-radio">
                   <div class="dest-top-row">
                     <span class="dest-dot rival-dot"></span>
                     <strong>Sworn Nemesis</strong>
                     <span class="dest-pill-badge rival-badge">Nemesis Fund</span>
+                    <input type="radio" name="stakeDestination" value="anticharity" class="dest-radio" aria-label="Select Sworn Nemesis">
                   </div>
                   <p class="dest-desc">Direct penalty routed to a cause or rival club you despise.</p>
                   <div class="dest-input-wrap">
@@ -342,15 +342,34 @@
 
                 <!-- Option C: Flat Drinks Pot -->
                 <label class="dest-option-card dest-card-clean dest-pill-card" data-target="drinks">
-                  <input type="radio" name="stakeDestination" value="drinks" class="dest-radio">
                   <div class="dest-top-row">
                     <span class="dest-dot beer-dot"></span>
                     <strong>Friday Beer Pot</strong>
                     <span class="dest-pill-badge beer-badge">Flat Kitty</span>
+                    <input type="radio" name="stakeDestination" value="drinks" class="dest-radio" aria-label="Select Friday Beer Pot">
                   </div>
                   <p class="dest-desc">Friday pub kitty. Flatmates cheer your failure.</p>
                   <div class="dest-input-wrap">
                     <span class="pot-tag">Friday Pot: <strong id="cardPotAmount">£45.00</strong></span>
+                  </div>
+                </label>
+
+                <!-- Option D: Custom Beneficiary -->
+                <label class="dest-option-card dest-card-clean dest-pill-card" data-target="custom">
+                  <div class="dest-top-row">
+                    <span class="dest-dot custom-route-dot"></span>
+                    <strong>Custom Routing</strong>
+                    <span class="dest-pill-badge custom-route-badge">Your route</span>
+                    <input type="radio" name="stakeDestination" value="custom" class="dest-radio" aria-label="Select Custom Routing">
+                  </div>
+                  <p class="dest-desc">Choose who receives the forfeited stake and where it should go.</p>
+                  <div class="dest-input-wrap custom-routing-fields">
+                    <input type="text" id="customRecipient" class="dest-subinput"
+                      placeholder="Recipient or organisation" aria-label="Custom beneficiary recipient" required>
+                    <input type="text" id="customDestination" class="dest-subinput"
+                      placeholder="Payout destination or account" aria-label="Custom payout destination" required>
+                    <input type="text" id="customInstructions" class="dest-subinput"
+                      placeholder="Optional routing instructions" aria-label="Custom routing instructions">
                   </div>
                 </label>
               </div>
