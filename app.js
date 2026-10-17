@@ -239,20 +239,28 @@
     soundToggleBtn: document.getElementById('soundToggleBtn'),
     soundIconOn: document.getElementById('soundIconOn'),
     soundIconOff: document.getElementById('soundIconOff'),
+    soundWaveBars: document.getElementById('soundWaveBars'),
     soundStatusLabel: document.getElementById('soundStatusLabel'),
     triggerAlarmSimBtn: document.getElementById('triggerAlarmSimBtn'),
     previewLaunchSimBtn: document.getElementById('previewLaunchSimBtn'),
     headerPillText: document.getElementById('headerPillText'),
     navStreakBadge: document.getElementById('navStreakBadge'),
     navBeerBadge: document.getElementById('navBeerBadge'),
+    deviceStatusTime: document.getElementById('deviceStatusTime'),
 
     // Tab 1: Form
     alarmTimeInput: document.getElementById('alarmTimeInput'),
     alarmLabelInput: document.getElementById('alarmLabelInput'),
+    timeMinus15Btn: document.getElementById('timeMinus15Btn'),
+    timePlus15Btn: document.getElementById('timePlus15Btn'),
+    timePeriodTag: document.getElementById('timePeriodTag'),
+    sleepDurationTag: document.getElementById('sleepDurationTag'),
     stakeDisplay: document.getElementById('stakeDisplay'),
     stakeChips: document.querySelectorAll('.stake-chip'),
     stakeSlider: document.getElementById('stakeSlider'),
     lossAversionBadge: document.getElementById('lossAversionBadge'),
+    lossEquivalentPill: document.getElementById('lossEquivalentPill'),
+    lossMeterFill: document.getElementById('lossMeterFill'),
     calloutStake: document.getElementById('calloutStake'),
     destCards: document.querySelectorAll('.dest-option-card, .dest-card-clean, .dest-pill-card'),
     destRadios: document.querySelectorAll('.dest-radio'),
@@ -264,13 +272,14 @@
     saveAlarmBtn: document.getElementById('saveAlarmBtn'),
     saveBtnText: document.getElementById('saveBtnText'),
 
-    // Threat Preview
+    // Live Threat Preview
     previewTime: document.getElementById('previewTime'),
     previewStake: document.getElementById('previewStake'),
     previewVerify: document.getElementById('previewVerify'),
     previewDestIcon: document.getElementById('previewDestIcon'),
     previewDestTitle: document.getElementById('previewDestTitle'),
     previewDestSub: document.getElementById('previewDestSub'),
+    activeContractHud: document.getElementById('activeContractHud'),
 
     // Tab 2: Stats
     statProtected: document.getElementById('statProtected'),
@@ -337,6 +346,7 @@
     disarmTimestamp: document.getElementById('disarmTimestamp'),
     newStreakDisplay: document.getElementById('newStreakDisplay'),
     dismissCelebrationBtn: document.getElementById('dismissCelebrationBtn'),
+    confettiContainer: document.getElementById('confettiContainer'),
 
     // Forfeit Modal
     forfeitModal: document.getElementById('forfeitModal'),
@@ -362,6 +372,8 @@
     renderTabs();
     renderFormFromState();
     updateThreatPreview();
+    updateSleepDurationTag();
+    updateDeviceClock();
     renderStats();
     renderCalendar();
     renderAuditLedger();
@@ -417,7 +429,7 @@
       return {
         icon: '💳',
         title: `Flatmate Jamie (@${tag})`,
-        subtitle: `Instantly transferred via Monzo Faster Payments to buy lunch.`
+        subtitle: `Instantly transferred via Monzo Faster Payments to buy their lunch.`
       };
     } else if (dest === 'anticharity') {
       const acKey = (DOM.antiCharitySelect ? DOM.antiCharitySelect.value : state.alarm.antiCharity) || 'millwall';
@@ -445,37 +457,122 @@
       DOM.headerPillText.innerHTML = `Next: <strong>${state.alarm.time} AM</strong> (${formattedStake} Staked)`;
     }
 
-    // Threat box
-    DOM.previewTime.textContent = `${state.alarm.time} AM`;
-    DOM.previewStake.textContent = formattedStake;
-    DOM.previewVerify.textContent = state.alarm.verifyMethod === 'qr' ? 'Kitchen QR' : 'Kettle Photo';
+    // Threat box & HUD
+    if (DOM.previewTime) DOM.previewTime.textContent = `${state.alarm.time} AM`;
+    if (DOM.previewStake) DOM.previewStake.textContent = formattedStake;
+    if (DOM.previewVerify) DOM.previewVerify.textContent = state.alarm.verifyMethod === 'qr' ? 'Kitchen QR' : 'Kettle Photo';
 
     const ben = getBeneficiaryDetails();
-    DOM.previewDestIcon.textContent = ben.icon;
-    DOM.previewDestTitle.textContent = ben.title;
-    DOM.previewDestSub.textContent = ben.subtitle;
+    if (DOM.previewDestIcon) DOM.previewDestIcon.textContent = ben.icon;
+    if (DOM.previewDestTitle) DOM.previewDestTitle.textContent = ben.title;
+    if (DOM.previewDestSub) DOM.previewDestSub.textContent = ben.subtitle;
 
     // Save button label
-    DOM.saveBtnText.textContent = `LOCK IN STAKE (${formattedStake} COMMITTED)`;
+    if (DOM.saveBtnText) {
+      DOM.saveBtnText.textContent = `LOCK IN STAKE (${formattedStake} COMMITTED)`;
+    }
 
-    // Psych label
+    // Psych label & loss equivalency
     updateLossPsychology(stake);
   }
 
   function updateLossPsychology(amount) {
     let text = '⚡ Mild Sting';
-    if (amount >= 50) {
+    let eqText = '1 Flat White & Warm Croissant';
+    let eqIcon = '☕';
+
+    if (amount >= 100) {
+      text = '☢️ Nuclear Forfeit';
+      eqText = 'London to Edinburgh Return Train Ticket';
+      eqIcon = '✈️';
+    } else if (amount >= 50) {
       text = '☠️ Financial Heart Attack';
+      eqText = 'Full Weekly Supermarket Grocery Shop';
+      eqIcon = '🛒';
     } else if (amount >= 25) {
       text = '🚨 Severe Agony';
+      eqText = 'Deliveroo Feast & Sides for Two';
+      eqIcon = '🍕';
     } else if (amount >= 15) {
       text = '⚠️ Serious Pain';
+      eqText = '3 Pints & Bar Snacks at the Pub';
+      eqIcon = '🍻';
     } else if (amount >= 10) {
       text = '🔥 Definite Ouch';
+      eqText = '2 Pints of Camden Hells at the Pub';
+      eqIcon = '🍺';
+    } else if (amount >= 5) {
+      text = '⚡ Mild Sting';
+      eqText = 'Specialty Flat White & Pastry';
+      eqIcon = '☕';
+    } else {
+      text = '⚡ Gentle Nudge';
+      eqText = 'Espresso Shot';
+      eqIcon = '☕';
     }
 
-    DOM.lossAversionBadge.textContent = text;
-    DOM.calloutStake.textContent = `£${amount.toFixed(2)}`;
+    if (DOM.lossAversionBadge) DOM.lossAversionBadge.textContent = text;
+    if (DOM.calloutStake) DOM.calloutStake.textContent = `£${amount.toFixed(2)}`;
+
+    if (DOM.lossEquivalentPill) {
+      DOM.lossEquivalentPill.innerHTML = `
+        <span class="loss-eq-icon">${eqIcon}</span>
+        <span class="loss-eq-text">Real-World Loss: <strong>${eqText}</strong></span>
+      `;
+    }
+
+    if (DOM.lossMeterFill) {
+      const fillPct = Math.min(100, Math.max(5, (amount / 100) * 100));
+      DOM.lossMeterFill.style.width = `${fillPct}%`;
+    }
+  }
+
+  function updateSleepDurationTag() {
+    if (!DOM.sleepDurationTag || !state.alarm.time) return;
+    
+    const [alarmHrs, alarmMins] = state.alarm.time.split(':').map(Number);
+    const now = new Date();
+    const alarmDate = new Date();
+    alarmDate.setHours(alarmHrs, alarmMins, 0, 0);
+
+    // If alarm is earlier than now, it's for tomorrow
+    if (alarmDate <= now) {
+      alarmDate.setDate(alarmDate.getDate() + 1);
+    }
+
+    const diffMs = alarmDate - now;
+    const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+    // Ideal bedtime for 8 hrs of rest
+    const bedtime = new Date(alarmDate.getTime() - 8 * 60 * 60 * 1000);
+    const bedHrs = String(bedtime.getHours()).padStart(2, '0');
+    const bedMins = String(bedtime.getMinutes()).padStart(2, '0');
+
+    DOM.sleepDurationTag.textContent = `⏰ In ${diffHrs}h ${diffMins}m (Sleep by ${bedHrs}:${bedMins} for 8h)`;
+  }
+
+  function adjustAlarmTime(deltaMinutes) {
+    if (!state.alarm.time) return;
+    const [h, m] = state.alarm.time.split(':').map(Number);
+    let totalMinutes = h * 60 + m + deltaMinutes;
+    if (totalMinutes < 0) totalMinutes += 24 * 60;
+    totalMinutes = totalMinutes % (24 * 60);
+
+    const newH = String(Math.floor(totalMinutes / 60)).padStart(2, '0');
+    const newM = String(totalMinutes % 60).padStart(2, '0');
+    const newTime = `${newH}:${newM}`;
+    
+    state.alarm.time = newTime;
+    DOM.alarmTimeInput.value = newTime;
+
+    // Remove active preset chips
+    document.querySelectorAll('.preset-chips .chip').forEach(c => {
+      c.classList.toggle('active', c.dataset.time === newTime);
+    });
+
+    updateThreatPreview();
+    updateSleepDurationTag();
   }
 
   function setStakeAmount(amount) {
@@ -493,6 +590,14 @@
     updateThreatPreview();
   }
 
+  function updateDeviceClock() {
+    if (!DOM.deviceStatusTime) return;
+    const now = new Date();
+    const hrs = String(now.getHours()).padStart(2, '0');
+    const mins = String(now.getMinutes()).padStart(2, '0');
+    DOM.deviceStatusTime.textContent = `${hrs}:${mins}`;
+  }
+
   // =========================================================================
   // 5. STATS, STREAKS & CALENDAR RENDERING
   // =========================================================================
@@ -501,7 +606,7 @@
     DOM.statStreak.textContent = `${state.userStats.currentStreak} Days`;
     DOM.statForfeited.textContent = `£${state.userStats.totalForfeited.toFixed(2)}`;
     DOM.statPubDonated.textContent = `£${state.userStats.pubDonated.toFixed(2)}`;
-    DOM.navStreakBadge.textContent = `${state.userStats.currentStreak} Days`;
+    DOM.navStreakBadge.textContent = `${state.userStats.currentStreak}d`;
   }
 
   function renderCalendar() {
@@ -509,7 +614,7 @@
     grid.innerHTML = '';
 
     // Generate 30 days grid
-    const totalDays = 30;
+    const totalDays = 28;
     const verifiedDaysCount = state.userStats.currentStreak;
     const forfeitDays = [5, 12]; // Simulated past forfeit days
 
@@ -545,7 +650,7 @@
         <td><strong>${item.date}</strong></td>
         <td>${item.mission}</td>
         <td><span class="badge ${item.method.includes('QR') ? 'badge-emerald' : 'badge-pro'}">${item.method}</span></td>
-        <td class="${isPositive ? 'text-emerald' : 'text-danger'}" style="font-family: var(--font-mono); font-weight: 700;">
+        <td class="${isPositive ? 'text-emerald' : 'text-danger'}" style="font-family: var(--font-mono); font-weight: 800;">
           ${item.outcome}
         </td>
         <td>${item.target}</td>
@@ -615,7 +720,6 @@
   // 7. HIGH-CONTRAST KITCHEN QR CODE GENERATOR (SVG Vector)
   // =========================================================================
   function renderKitchenQrCode() {
-    // Generate a high-contrast crisp vector QR Code representation
     const holder = DOM.qrCanvasHolder;
     holder.innerHTML = `
       <svg viewBox="0 0 250 250" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -652,7 +756,7 @@
         
         <rect x="25" y="110" width="20" height="15" fill="black"/>
         <rect x="65" y="110" width="30" height="15" fill="black"/>
-        <rect x="110" y="110" width="30" height="30" rx="4" fill="#FF2E55"/>
+        <rect x="110" y="110" width="30" height="30" rx="4" fill="#FF2B4E"/>
         <text x="125" y="130" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">⚡</text>
         <rect x="155" y="110" width="20" height="15" fill="black"/>
         <rect x="190" y="110" width="35" height="15" fill="black"/>
@@ -784,7 +888,7 @@
       state.userStats.pubDonated += flatKittyAddition;
     }
 
-    // Add shame entry
+    // Add activity entry
     const timeNow = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     state.flatActivity.unshift({
       id: `act-${Date.now()}`,
@@ -875,11 +979,11 @@
             DOM.webcamVideo.classList.remove('hidden');
             DOM.viewfinderPlaceholder.classList.add('hidden');
             DOM.toggleWebcamBtn.textContent = 'Disable Physical Webcam';
-            showToast('Webcam active! Hold camera to kitchen QR code', 'toast-success');
+            showToast('Webcam active! Align camera to kitchen QR terminal', 'toast-success');
           })
           .catch(err => {
             console.warn('Webcam access error', err);
-            showToast('Webcam unavailable or permission denied. Using instant QR simulator.', 'toast-warning');
+            showToast('Webcam permission not granted. Use instant simulator button.', 'toast-warning');
           });
       } else {
         showToast('Webcam API not supported in this browser environment', 'toast-warning');
@@ -891,6 +995,26 @@
     if (webcamStream) {
       webcamStream.getTracks().forEach(track => track.stop());
       webcamStream = null;
+    }
+  }
+
+  // Celebration Confetti Animation
+  function triggerConfettiBurst() {
+    if (!DOM.confettiContainer) return;
+    DOM.confettiContainer.innerHTML = '';
+    const colors = ['#00E599', '#FF2B4E', '#F5A623', '#00D2FF', '#FFFFFF', '#FFB020'];
+
+    for (let i = 0; i < 35; i++) {
+      const conf = document.createElement('div');
+      conf.className = 'confetti-piece';
+      conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      conf.style.left = `${Math.random() * 100}%`;
+      conf.style.top = `${Math.random() * 20}%`;
+      conf.style.transform = `rotate(${Math.random() * 360}deg)`;
+      conf.style.animationDelay = `${Math.random() * 0.4}s`;
+      conf.style.width = `${Math.random() * 8 + 6}px`;
+      conf.style.height = `${Math.random() * 12 + 8}px`;
+      DOM.confettiContainer.appendChild(conf);
     }
   }
 
@@ -951,7 +1075,8 @@
     DOM.newStreakDisplay.textContent = `${state.userStats.currentStreak} Days`;
     DOM.celebrationModal.classList.add('active');
 
-    showToast(`🎉 Stake Protected! +£${stakeAmt.toFixed(2)} safe!`, 'toast-success');
+    triggerConfettiBurst();
+    showToast(`🎉 Stake Protected! +£${stakeAmt.toFixed(2)} defended!`, 'toast-success');
   }
 
   // Photo AI Computer Vision Verification Sequence
@@ -1025,13 +1150,14 @@
   }
 
   function startHeaderClock() {
-    // Subtle real-time pulse
     setInterval(() => {
       const now = new Date();
       if (DOM.timePeriodTag) {
         DOM.timePeriodTag.textContent = (now.getHours() >= 12) ? 'Tomorrow Morning' : 'Today';
       }
-    }, 60000);
+      updateSleepDurationTag();
+      updateDeviceClock();
+    }, 30000);
   }
 
   // =========================================================================
@@ -1040,9 +1166,7 @@
   function showToast(message, type = 'toast-info') {
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
-    toast.innerHTML = `
-      <span>${message}</span>
-    `;
+    toast.innerHTML = `<span>${message}</span>`;
 
     DOM.toastContainer.appendChild(toast);
 
@@ -1061,8 +1185,11 @@
       const isMuted = sound.toggleMute();
       DOM.soundIconOn.classList.toggle('hidden', isMuted);
       DOM.soundIconOff.classList.toggle('hidden', !isMuted);
+      if (DOM.soundWaveBars) {
+        DOM.soundWaveBars.style.display = isMuted ? 'none' : 'flex';
+      }
       DOM.soundStatusLabel.textContent = isMuted ? 'Muted' : 'Audio Active';
-      showToast(isMuted ? '🔇 Audio muted' : '🔊 Loss-Aversion Audio Activated!', 'toast-info');
+      showToast(isMuted ? '🔇 Audio muted' : '🔊 Loss-aversion siren synthesizer ready!', 'toast-info');
     });
 
     // View Mode Toggle (Desktop vs Phone Mockup)
@@ -1072,9 +1199,17 @@
         btn.classList.add('active');
         const mode = btn.dataset.mode;
         document.body.classList.toggle('mode-mobile-frame', mode === 'mobile');
-        showToast(mode === 'mobile' ? 'Switched to Mobile App Frame' : 'Command Center View Active', 'toast-info');
+        showToast(mode === 'mobile' ? 'Switched to Mobile Phone Frame' : 'Command Center View Active', 'toast-info');
       });
     });
+
+    // Steppers (-15m and +15m)
+    if (DOM.timeMinus15Btn) {
+      DOM.timeMinus15Btn.addEventListener('click', () => adjustAlarmTime(-15));
+    }
+    if (DOM.timePlus15Btn) {
+      DOM.timePlus15Btn.addEventListener('click', () => adjustAlarmTime(15));
+    }
 
     // Time Presets
     document.querySelectorAll('.preset-chips .chip').forEach(chip => {
@@ -1085,12 +1220,14 @@
         DOM.alarmTimeInput.value = timeVal;
         state.alarm.time = timeVal;
         updateThreatPreview();
+        updateSleepDurationTag();
       });
     });
 
     DOM.alarmTimeInput.addEventListener('change', (e) => {
       state.alarm.time = e.target.value;
       updateThreatPreview();
+      updateSleepDurationTag();
     });
 
     DOM.alarmLabelInput.addEventListener('input', (e) => {
@@ -1172,7 +1309,9 @@
 
     // Emergency Alarm Simulator Triggers
     DOM.triggerAlarmSimBtn.addEventListener('click', launchEmergencySimulator);
-    DOM.previewLaunchSimBtn.addEventListener('click', launchEmergencySimulator);
+    if (DOM.previewLaunchSimBtn) {
+      DOM.previewLaunchSimBtn.addEventListener('click', launchEmergencySimulator);
+    }
 
     // Emergency HUD Buttons
     DOM.openDisarmModalBtn.addEventListener('click', openDisarmModal);
@@ -1198,7 +1337,7 @@
         const reader = new FileReader();
         reader.onload = (event) => {
           DOM.photoPreviewArea.innerHTML = `<img src="${event.target.result}" style="max-width:100%; max-height:200px; border-radius:12px; object-fit:contain;" alt="Uploaded evidence">`;
-          DOM.photoMetaLabel.textContent = `User Photo Uploaded: ${file.name}`;
+          DOM.photoMetaLabel.textContent = `Evidence Uploaded: ${file.name}`;
           showToast('Custom photo loaded! Ready for neural verification.', 'toast-info');
         };
         reader.readAsDataURL(file);
@@ -1212,6 +1351,16 @@
 
     DOM.dismissForfeitBtn.addEventListener('click', () => {
       DOM.forfeitModal.classList.remove('active');
+    });
+
+    // Keyboard ESC shortcut to close any active modal
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (DOM.disarmModal.classList.contains('active')) closeDisarmModal();
+        else if (DOM.alarmModal.classList.contains('active')) closeEmergencyModal();
+        else if (DOM.celebrationModal.classList.contains('active')) DOM.celebrationModal.classList.remove('active');
+        else if (DOM.forfeitModal.classList.contains('active')) DOM.forfeitModal.classList.remove('active');
+      }
     });
 
     // Flatmate War Room: Simulate Dave Snoozing
