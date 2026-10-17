@@ -236,6 +236,9 @@
     tabs: document.querySelectorAll('.tab-link, .nav-pill, .nav-tab-btn'),
     tabPanes: document.querySelectorAll('.tab-pane'),
     viewModeBtns: document.querySelectorAll('.view-btn, .view-opt'),
+    themeToggleBtn: document.getElementById('themeToggleBtn'),
+    themeIconSun: document.querySelector('.theme-icon-sun'),
+    themeIconMoon: document.querySelector('.theme-icon-moon'),
     soundToggleBtn: document.getElementById('soundToggleBtn'),
     soundIconOn: document.getElementById('soundIconOn'),
     soundIconOff: document.getElementById('soundIconOff'),
@@ -368,7 +371,20 @@
   // =========================================================================
   // 4. UI INITIALIZATION & SYNC
   // =========================================================================
+  function setTheme(theme) {
+    const isLight = theme === 'light';
+    document.body.classList.toggle('theme-light', isLight);
+    document.body.classList.toggle('theme-dark', !isLight);
+    DOM.themeToggleBtn.setAttribute('aria-pressed', String(isLight));
+    DOM.themeToggleBtn.setAttribute('aria-label', `Switch to ${isLight ? 'dark' : 'light'} mode`);
+    DOM.themeToggleBtn.title = `Switch to ${isLight ? 'dark' : 'light'} mode`;
+    DOM.themeIconSun.classList.toggle('hidden', isLight);
+    DOM.themeIconMoon.classList.toggle('hidden', !isLight);
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', isLight ? '#F4F6FA' : '#07090D');
+  }
+
   function init() {
+    setTheme(localStorage.getItem('wakestake-theme') || 'dark');
     renderTabs();
     renderFormFromState();
     updateThreatPreview();
@@ -1180,6 +1196,12 @@
   // 13. EVENT LISTENERS
   // =========================================================================
   function bindEvents() {
+    DOM.themeToggleBtn.addEventListener('click', () => {
+      const nextTheme = document.body.classList.contains('theme-light') ? 'dark' : 'light';
+      setTheme(nextTheme);
+      localStorage.setItem('wakestake-theme', nextTheme);
+    });
+
     // Sound Toggle in Header
     DOM.soundToggleBtn.addEventListener('click', () => {
       const isMuted = sound.toggleMute();

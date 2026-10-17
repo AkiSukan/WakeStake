@@ -3488,6 +3488,147 @@ body.mode-mobile-frame .verify-meta small {
   overflow-wrap: anywhere;
 }
 
+/* Light theme */
+body.theme-light {
+  --bg-deep: #F3F5F9;
+  --bg-card: rgba(255, 255, 255, 0.94);
+  --bg-input: #FFFFFF;
+  --border-hairline: rgba(31, 41, 55, 0.12);
+  --border-focus: rgba(31, 41, 55, 0.3);
+  --red-subtle: rgba(220, 38, 67, 0.1);
+  --red-glow: rgba(220, 38, 67, 0.18);
+  --emerald-safe: #07845D;
+  --emerald-protected: #07845D;
+  --emerald-subtle: rgba(7, 132, 93, 0.1);
+  --amber-warn: #A85D00;
+  --amber-subtle: rgba(168, 93, 0, 0.1);
+  --beer-gold: #9A5B00;
+  --beer-subtle: rgba(154, 91, 0, 0.1);
+  --cyan-tactical: #087EA4;
+  --cyan-subtle: rgba(8, 126, 164, 0.1);
+  color-scheme: light;
+  color: #263244;
+  background-color: var(--bg-deep);
+  background-image: radial-gradient(rgba(31, 41, 55, 0.055) 1px, transparent 1px);
+}
+
+body.theme-light :where(*) {
+  color: #263244;
+}
+
+body.theme-light :is(
+  .app-header, .nav-tabs-bar, .status-indicator, .icon-toggle, .view-switch,
+  .instrument-card, .time-instrument-box, .mission-input-inner, .stake-instrument-box,
+  .dest-option-card, .verify-pill-card, .live-contract-hud, .hud-cell,
+  .card, .clean-card, .metric-card, .beer-hero-card, .pricing-card,
+  .leaderboard-row, .activity-item, .feed-box, .audit-table-wrapper, .audit-table,
+  .viewfinder-box, .photo-preview-box, .photo-preview-area, .receipt-box,
+  .forfeit-social-alert, .emergency-hud-container, .disarm-card,
+  .celebration-card, .forfeit-card, .toast, .stepper-btn, .chip,
+  .dest-input-wrap, .verify-pill-card .verify-glyph-circle
+) {
+  background-color: #FFFFFF;
+  border-color: var(--border-hairline);
+  box-shadow: 0 8px 24px rgba(31, 41, 55, 0.06);
+}
+
+body.theme-light .app-header {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(24px);
+}
+
+body.theme-light .instrument-card,
+body.theme-light .clean-card,
+body.theme-light .live-contract-hud,
+body.theme-light .metric-card,
+body.theme-light .pricing-card,
+body.theme-light .dest-option-card,
+body.theme-light .verify-pill-card,
+body.theme-light .leaderboard-row,
+body.theme-light .beer-hero-card,
+body.theme-light .emergency-hud-container,
+body.theme-light .disarm-card,
+body.theme-light .celebration-card,
+body.theme-light .forfeit-card {
+  background: #FFFFFF;
+}
+
+body.theme-light :is(input, select, textarea, .time-instrument-box, .mission-input-inner, .dest-input-wrap, .stepper-btn, .chip) {
+  background-color: #F8FAFC;
+  color: #263244;
+}
+
+body.theme-light :is(input, select, textarea)::placeholder {
+  color: #64748B;
+}
+
+body.theme-light :is(.hero-headline, .brand-title, .section-headline, .card-title, .metric-value, .tier-name, .row-label, .verify-headline strong, .member-name, .audit-table th) {
+  color: #172033;
+}
+
+body.theme-light .text-gradient {
+  background: linear-gradient(135deg, #172033 30%, #526176 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body.theme-light :is(.text-danger, .forfeit-title, .forfeit-amount, .text-crimson, .row-index, .micro-tag) {
+  color: #C81E3A;
+}
+
+body.theme-light :is(.text-emerald, .badge-emerald, .badge-green, .verify-pill-card.active .verify-glyph-circle) {
+  color: #087A57;
+}
+
+body.theme-light :is(.text-beer, .badge-beer, .pot-tag) {
+  color: #8A5100;
+}
+
+body.theme-light :is(.btn-primary, .btn-success, .btn-danger, .btn-beer, .btn-commit, .btn-emergency-minimal, .nav-pill.active) {
+  color: #FFFFFF;
+}
+
+body.theme-light :is(.btn-primary, .btn-success, .btn-danger, .btn-beer, .btn-commit) * {
+  color: #FFFFFF;
+}
+
+body.theme-light .chip.active,
+body.theme-light .chip.active small {
+  color: #9F1239;
+}
+
+body.theme-light .nav-pill.active {
+  background: #E5EAF2;
+  color: #172033;
+}
+
+body.theme-light .verify-pill-card.active {
+  background: #EAF8F2;
+  border-color: #07845D;
+}
+
+body.theme-light .ambient-glow {
+  opacity: 0.035;
+}
+
+body.theme-light.mode-mobile-frame {
+  background-color: #DDE3EC;
+}
+
+body.theme-light.mode-mobile-frame #mainContainer {
+  background: #F7F9FC;
+}
+
+body.theme-light.mode-mobile-frame .app-header {
+  border-color: rgba(31, 41, 55, 0.14);
+}
+
+.theme-toggle svg {
+  width: 16px;
+  height: 16px;
+}
+
 body.mode-mobile-frame .reliability-tag,
 body.mode-mobile-frame .ai-tag {
   white-space: normal;
