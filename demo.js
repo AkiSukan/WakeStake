@@ -22,6 +22,7 @@
     [1800, 'Stake slider → £25',          demoSliderStake],
     [2000, 'Loss Equivalency update',     demoLossEquivalent],
     [1600, 'Switch destination → Beer Pot', demoBeerPot],
+    [1800, 'Set QR station → Gym (20-min walk)', demoQrLocation],
     [2000, 'Lock In Stake button',        demoLockIn],
     [2200, 'Nav → War Room (Leaderboard)', demoNavWarRoom],
     [1800, 'Simulate Flatmate Snooze',    demoSimulateSnooze],
@@ -387,7 +388,7 @@
         Loss-Aversion Alarm Clock &bull; Hackathon Demo
       </div>
       <div style="font-size:0.82rem;color:#718096;margin-top:8px;">
-        Stake real money. Walk to your kitchen QR. Or pay your flatmates.
+        Stake real money. Walk to your selected QR station. Or pay your flatmates.
       </div>
     `;
     document.body.appendChild(banner);
@@ -454,6 +455,30 @@
       card.click();
       spotlight(card, '🍺 Friday Beer Pot — forfeit funds the flat pub night!', 'top');
     }
+  }
+
+  function demoQrLocation() {
+    const qrMethod = document.querySelector('.verify-chip[data-verify="qr"]');
+    const location = document.getElementById('qrLocationSelect');
+    const travelTime = document.getElementById('qrTravelMinutes');
+    const settings = document.getElementById('qrLocationSettings');
+    if (!location || !travelTime) return;
+
+    if (qrMethod) qrMethod.click();
+    location.value = 'gym';
+    location.dispatchEvent(new Event('change', { bubbles: true }));
+    travelTime.value = '20';
+    travelTime.dispatchEvent(new Event('input', { bubbles: true }));
+    spotlight(settings, `${demoGetQrLocationLabel()} QR station selected. A 20-minute walk gets a 50-minute scan deadline.`, 'top');
+  }
+
+  function demoGetQrLocationLabel() {
+    const locationSelect = document.getElementById('qrLocationSelect');
+    if (!locationSelect) return 'Home / Kitchen';
+    if (locationSelect.value === 'other') {
+      return document.getElementById('qrCustomLocation')?.value.trim() || 'Other Location';
+    }
+    return locationSelect.options[locationSelect.selectedIndex]?.textContent || 'Home / Kitchen';
   }
 
   function demoLockIn() {
@@ -548,14 +573,15 @@
     clickTab('tab-alarm');
     setTimeout(() => {
       const simBtn = document.getElementById('triggerAlarmSimBtn');
-      spotlight(simBtn, '⚡ Time for the big moment — the morning simulation!', 'top');
+      spotlight(simBtn, `⚡ ${demoGetQrLocationLabel()} QR is selected for the morning simulation.`, 'top');
     }, 400);
   }
 
   function demoLaunchSim() {
     const btn = document.getElementById('triggerAlarmSimBtn');
     if (btn) {
-      spotlight(btn, '🚨 LAUNCHING wake-up simulation! 5-minute grace clock starts…', 'top');
+      const deadline = document.getElementById('qrDeadlineMinutes')?.value || '5';
+      spotlight(btn, `🚨 Wake-up simulation starts. Scan the ${demoGetQrLocationLabel()} QR within ${deadline} minutes.`, 'top');
       setTimeout(() => btn.click(), 600);
     }
   }
@@ -564,7 +590,7 @@
     // Emergency modal should be up — click disarm
     const disarmBtn = document.getElementById('openDisarmModalBtn');
     if (disarmBtn && document.getElementById('alarmModal').classList.contains('active')) {
-      spotlight(disarmBtn, '🏃 I\'m out of bed! Opening QR verification scanner…', 'top');
+      spotlight(disarmBtn, `🏃 Opening the ${demoGetQrLocationLabel()} QR scanner.`, 'top');
       setTimeout(() => disarmBtn.click(), 700);
     }
   }
@@ -573,7 +599,7 @@
     // Trigger QR scan success
     const scanBtn = document.getElementById('simulateQrScanSuccessBtn');
     if (scanBtn && document.getElementById('disarmModal').classList.contains('active')) {
-      spotlight(scanBtn, '📷 Scanning kettle QR terminal… VERIFIED! Stake returned!', 'top');
+      spotlight(scanBtn, `📷 Scanning the ${demoGetQrLocationLabel()} QR terminal… VERIFIED! Stake returned!`, 'top');
       setTimeout(() => scanBtn.click(), 700);
     } else {
       // disarm modal may not be open; force success directly

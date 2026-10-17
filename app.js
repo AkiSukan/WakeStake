@@ -23,6 +23,10 @@
       customDestination: '',
       customInstructions: '',
       verifyMethod: 'qr', // 'qr' | 'photo'
+      qrLocation: 'kitchen',
+      qrCustomLocation: '',
+      qrTravelMinutes: 0,
+      qrDeadlineMinutes: 5,
       isActive: true
     },
     userStats: {
@@ -274,6 +278,13 @@
     destRadios: document.querySelectorAll('.dest-radio'),
     flatmateMonzoTag: document.getElementById('flatmateMonzoTag'),
     antiCharitySelect: document.getElementById('antiCharitySelect'),
+    qrLocationSettings: document.getElementById('qrLocationSettings'),
+    qrLocationSelect: document.getElementById('qrLocationSelect'),
+    qrCustomLocationField: document.getElementById('qrCustomLocationField'),
+    qrCustomLocation: document.getElementById('qrCustomLocation'),
+    qrTravelMinutes: document.getElementById('qrTravelMinutes'),
+    qrDeadlineMinutes: document.getElementById('qrDeadlineMinutes'),
+    contractQrDeadline: document.getElementById('contractQrDeadline'),
     customRecipient: document.getElementById('customRecipient'),
     customDestination: document.getElementById('customDestination'),
     customInstructions: document.getElementById('customInstructions'),
@@ -326,6 +337,9 @@
     activeStakeAmt: document.getElementById('activeStakeAmt'),
     graceTimerDigits: document.getElementById('graceTimerDigits'),
     graceProgressBar: document.getElementById('graceProgressBar'),
+    countdownTitle: document.getElementById('countdownTitle'),
+    graceDeadlineLabel: document.getElementById('graceDeadlineLabel'),
+    activeQrLocation: document.getElementById('activeQrLocation'),
     activeBeneficiaryName: document.getElementById('activeBeneficiaryName'),
     snoozeDestLabel: document.getElementById('snoozeDestLabel'),
     openDisarmModalBtn: document.getElementById('openDisarmModalBtn'),
@@ -339,6 +353,8 @@
     closeDisarmBtn: document.getElementById('closeDisarmBtn'),
     modeQrTab: document.getElementById('modeQrTab'),
     modePhotoTab: document.getElementById('modePhotoTab'),
+    qrPlaceholderText: document.getElementById('qrPlaceholderText'),
+    qrScannerStatus: document.getElementById('qrScannerStatus'),
     qrVerifyPanel: document.getElementById('qrVerifyPanel'),
     photoVerifyPanel: document.getElementById('photoVerifyPanel'),
     simulateQrScanSuccessBtn: document.getElementById('simulateQrScanSuccessBtn'),
@@ -441,6 +457,11 @@
     if (DOM.customRecipient) DOM.customRecipient.value = state.alarm.customRecipient || '';
     if (DOM.customDestination) DOM.customDestination.value = state.alarm.customDestination || '';
     if (DOM.customInstructions) DOM.customInstructions.value = state.alarm.customInstructions || '';
+    if (DOM.qrLocationSelect) DOM.qrLocationSelect.value = state.alarm.qrLocation || 'kitchen';
+    if (DOM.qrCustomLocation) DOM.qrCustomLocation.value = state.alarm.qrCustomLocation || '';
+    if (DOM.qrTravelMinutes) DOM.qrTravelMinutes.value = state.alarm.qrTravelMinutes ?? 0;
+    if (DOM.qrDeadlineMinutes) DOM.qrDeadlineMinutes.value = state.alarm.qrDeadlineMinutes || 5;
+    syncQrLocationSettings();
 
     // Verify method
     DOM.verifyRadios.forEach(radio => {
@@ -511,7 +532,18 @@
     // Threat box & HUD
     if (DOM.previewTime) DOM.previewTime.textContent = `${state.alarm.time} AM`;
     if (DOM.previewStake) DOM.previewStake.textContent = formattedStake;
-    if (DOM.previewVerify) DOM.previewVerify.textContent = state.alarm.verifyMethod === 'qr' ? 'Kitchen QR' : 'Kettle Photo';
+    if (DOM.previewVerify) {
+      DOM.previewVerify.textContent = state.alarm.verifyMethod === 'qr'
+        ? `${getQrLocationLabel()} QR (${getQrDeadlineMinutes()} min)`
+        : 'Kettle Photo';
+    }
+    updateQrStationCopy();
+    if (DOM.qrLocationSettings) DOM.qrLocationSettings.classList.toggle('hidden', state.alarm.verifyMethod !== 'qr');
+    if (DOM.contractQrDeadline) {
+      DOM.contractQrDeadline.textContent = state.alarm.verifyMethod === 'qr'
+        ? `${getQrDeadlineMinutes()}-minute scan deadline at ${getQrLocationLabel()}.`
+        : '5-minute photo verification window.';
+    }
 
     const ben = getBeneficiaryDetails();
     if (DOM.previewDestIcon) DOM.previewDestIcon.textContent = ben.icon;
@@ -525,6 +557,55 @@
 
     // Psych label & loss equivalency
     updateLossEquivalent(stake);
+  }
+
+  function getQrLocationLabel() {
+    const names = {
+      kitchen: 'Home / Kitchen',
+      library: 'Library',
+      gym: 'Gym',
+      lecture_hall: 'Lecture Hall',
+      other: (state.alarm.qrCustomLocation || '').trim() || 'Other Location'
+    };
+    return names[state.alarm.qrLocation] || names.kitchen;
+  }
+
+  function updateQrStationCopy() {
+    const location = getQrLocationLabel();
+    if (DOM.modeQrTab) DOM.modeQrTab.textContent = `📷 ${location} QR Terminal`;
+    if (DOM.qrPlaceholderText) DOM.qrPlaceholderText.textContent = `Align ${location} QR Code Inside Box`;
+    if (DOM.qrScannerStatus) DOM.qrScannerStatus.textContent = `Ready to scan at ${location}`;
+    if (DOM.simulateQrScanSuccessBtn) DOM.simulateQrScanSuccessBtn.textContent = `⚡ Scan ${location} QR Terminal Now (Verify & Disarm)`;
+  }
+
+  function getQrDeadlineMinutes() {
+    const configured = parseInt(state.alarm.qrDeadlineMinutes, 10);
+    return Number.isFinite(configured) ? Math.min(180, Math.max(1, configured)) : 5;
+  }
+
+  function syncQrLocationSettings() {
+    if (!DOM.qrLocationSelect) return;
+    const location = DOM.qrLocationSelect.value;
+    const isHome = location === 'kitchen';
+    if (DOM.qrCustomLocationField) DOM.qrCustomLocationField.classList.toggle('hidden', location !== 'other');
+    if (DOM.qrTravelMinutes) {
+      DOM.qrTravelMinutes.disabled = isHome;
+      DOM.qrTravelMinutes.value = state.alarm.qrTravelMinutes ?? 0;
+    }
+    if (DOM.qrDeadlineMinutes) DOM.qrDeadlineMinutes.value = state.alarm.qrDeadlineMinutes || 5;
+  }
+
+  function setQrLocation(location) {
+    state.alarm.qrLocation = location;
+    if (location === 'kitchen') {
+      state.alarm.qrTravelMinutes = 0;
+      state.alarm.qrDeadlineMinutes = 5;
+    } else {
+      state.alarm.qrTravelMinutes = 20;
+      state.alarm.qrDeadlineMinutes = 50;
+    }
+    syncQrLocationSettings();
+    updateThreatPreview();
   }
 
   function updateLossEquivalent(amount) {
@@ -822,9 +903,14 @@
   // 8. EMERGENCY MORNING ALARM TAKEOVER SIMULATOR
   // =========================================================================
   function launchEmergencySimulator() {
-    // Reset grace countdown
-    graceCountdownSecs = 300; // 5:00
+    const deadlineMinutes = state.alarm.verifyMethod === 'qr' ? getQrDeadlineMinutes() : 5;
+    graceCountdownSecs = deadlineMinutes * 60;
     updateGraceCountdownDisplay();
+    if (DOM.countdownTitle) DOM.countdownTitle.textContent = `${deadlineMinutes}-MINUTE ${state.alarm.verifyMethod === 'qr' ? 'QR SCAN' : 'PHOTO VERIFICATION'} DEADLINE`;
+    if (DOM.graceDeadlineLabel) DOM.graceDeadlineLabel.textContent = state.alarm.verifyMethod === 'qr'
+      ? `BEFORE AUTOMATIC FORFEIT · ${getQrLocationLabel()}`
+      : 'BEFORE AUTOMATIC FORFEIT · PHOTO VERIFICATION';
+    if (DOM.activeQrLocation) DOM.activeQrLocation.textContent = state.alarm.verifyMethod === 'qr' ? getQrLocationLabel() : 'Photo verification';
 
     // Populate HUD
     DOM.activeAlarmReason.textContent = state.alarm.label;
@@ -857,7 +943,7 @@
       // If time expires, automatic forfeit!
       if (graceCountdownSecs <= 0) {
         clearInterval(graceInterval);
-        handleForfeitTrigger('Grace period expired (5m exceeded)');
+        handleForfeitTrigger(`Scan deadline expired (${deadlineMinutes}m exceeded)`);
       }
     }, 1000);
 
@@ -884,7 +970,8 @@
     const formatted = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     DOM.graceTimerDigits.textContent = formatted;
 
-    const percent = (graceCountdownSecs / 300) * 100;
+    const totalSeconds = (state.alarm.verifyMethod === 'qr' ? getQrDeadlineMinutes() : 5) * 60;
+    const percent = (graceCountdownSecs / totalSeconds) * 100;
     DOM.graceProgressBar.style.width = `${percent}%`;
 
     if (graceCountdownSecs < 60) {
@@ -1017,7 +1104,7 @@
             DOM.webcamVideo.classList.remove('hidden');
             DOM.viewfinderPlaceholder.classList.add('hidden');
             DOM.toggleWebcamBtn.textContent = 'Disable Physical Webcam';
-            showToast('Webcam active! Align camera to kitchen QR terminal', 'toast-success');
+            showToast(`Webcam active! Align camera to the ${getQrLocationLabel()} QR station`, 'toast-success');
           })
           .catch(err => {
             console.warn('Webcam access error', err);
@@ -1335,6 +1422,30 @@
       });
     }
 
+    if (DOM.qrLocationSelect) {
+      DOM.qrLocationSelect.addEventListener('change', (e) => {
+        setQrLocation(e.target.value);
+      });
+    }
+
+    if (DOM.qrTravelMinutes) {
+      DOM.qrTravelMinutes.addEventListener('input', (e) => {
+        const travelMinutes = Math.min(120, Math.max(0, parseInt(e.target.value, 10) || 0));
+        e.target.value = travelMinutes;
+        state.alarm.qrTravelMinutes = travelMinutes;
+        state.alarm.qrDeadlineMinutes = state.alarm.qrLocation === 'kitchen' ? 5 : Math.min(180, travelMinutes + 30);
+        if (DOM.qrDeadlineMinutes) DOM.qrDeadlineMinutes.value = state.alarm.qrDeadlineMinutes;
+        updateThreatPreview();
+      });
+    }
+
+    if (DOM.qrCustomLocation) {
+      DOM.qrCustomLocation.addEventListener('input', (e) => {
+        state.alarm.qrCustomLocation = e.target.value;
+        updateThreatPreview();
+      });
+    }
+
     [
       [DOM.customRecipient, 'customRecipient'],
       [DOM.customDestination, 'customDestination'],
@@ -1365,6 +1476,11 @@
 
     // Save Alarm Button
     DOM.saveAlarmBtn.addEventListener('click', () => {
+      if (state.alarm.verifyMethod === 'qr' && state.alarm.qrLocation === 'other' && !DOM.qrCustomLocation.value.trim()) {
+        DOM.qrCustomLocationField.classList.remove('hidden');
+        DOM.qrCustomLocation.reportValidity();
+        return;
+      }
       if (state.alarm.destination === 'custom') {
         if (!DOM.customRecipient.value.trim()) {
           DOM.customRecipient.reportValidity();
@@ -1399,7 +1515,7 @@
     DOM.modeQrTab.addEventListener('click', switchToQrTab);
     DOM.modePhotoTab.addEventListener('click', switchToPhotoTab);
     DOM.closeDisarmBtn.addEventListener('click', closeDisarmModal);
-    DOM.simulateQrScanSuccessBtn.addEventListener('click', () => handleDisarmSuccess('Kitchen QR Code'));
+    DOM.simulateQrScanSuccessBtn.addEventListener('click', () => handleDisarmSuccess(`${getQrLocationLabel()} QR Code`));
     DOM.toggleWebcamBtn.addEventListener('click', toggleWebcam);
     DOM.runAiPhotoVerificationBtn.addEventListener('click', runPhotoAiAnalysis);
 

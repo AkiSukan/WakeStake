@@ -1210,6 +1210,76 @@ body.mode-mobile-frame #mainContainer {
   gap: 12px;
 }
 
+.qr-location-settings {
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-lg);
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.qr-location-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 12px;
+}
+
+.qr-location-heading strong {
+  color: #EDF2F7;
+  font-size: 0.86rem;
+}
+
+.qr-location-heading span,
+.qr-location-help {
+  color: #8C9BB4;
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.qr-location-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.qr-setting-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  color: #CBD5E1;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.qr-setting-field input,
+.qr-setting-field select {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  color: #EDF2F7;
+  font: inherit;
+  box-sizing: border-box;
+}
+
+.qr-setting-field input[readonly] {
+  opacity: 0.82;
+  font-family: var(--font-mono);
+}
+
+.qr-setting-field input:disabled {
+  opacity: 0.58;
+}
+
+.qr-location-help {
+  margin: 10px 0 0;
+}
+
 .verify-pill-card {
   display: flex;
   align-items: flex-start;
@@ -3256,6 +3326,10 @@ body.mode-mobile-frame #mainContainer {
 
 /* Keep the simulated handset and its contents within narrow viewports. */
 @media (max-width: 480px) {
+  .qr-location-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   body.mode-mobile-frame {
     width: min(100% - 16px, 440px);
     padding: 12px 0 24px;
@@ -3500,6 +3574,10 @@ body.mode-mobile-frame .dest-toggle-group {
   grid-template-columns: minmax(0, 1fr);
 }
 
+body.mode-mobile-frame .qr-location-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 body.mode-mobile-frame .verify-pill-card,
 body.mode-mobile-frame .verify-meta {
   min-width: 0;
@@ -3650,6 +3728,23 @@ body.theme-light .dest-pill-card.active {
   background: #FFF1F3;
   border-color: #D91F43;
   box-shadow: 0 0 0 2px rgba(217, 31, 67, 0.14);
+}
+
+body.theme-light .qr-location-settings {
+  background: #F8FAFC;
+}
+
+body.theme-light .qr-setting-field {
+  color: #344054;
+}
+
+body.theme-light .qr-location-heading strong {
+  color: #172033;
+}
+
+body.theme-light .qr-location-heading span,
+body.theme-light .qr-location-help {
+  color: #64748B;
 }
 
 body.theme-light .ambient-glow {

@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
   <title>WakeStake — The Loss-Aversion Alarm Clock That Actually Gets You Up</title>
   <meta name="description"
-    content="A behavioral-economics alarm where you put real money on the line to wake up. Scan your kitchen QR within 5 minutes or forfeit your stake.">
+    content="A behavioral-economics alarm where you put real money on the line to wake up. Scan your selected QR station before its configured deadline or forfeit your stake.">
   <meta name="theme-color" content="#07090D">
 
   <!-- Modern Clean Typography -->
@@ -201,8 +201,7 @@
               <span class="shield-badge">🛡️ Loss Aversion Engine</span>
             </div>
             <h1 class="hero-headline">Put skin in the game. <span class="text-gradient">Wake up on time.</span></h1>
-            <p class="hero-caption">Snoozing has zero immediate consequence. Put real money on the line and verify at
-              your kitchen kettle or pay the forfeit to your flatmates.</p>
+            <p class="hero-caption">Snoozing has zero immediate consequence. Put real money on the line and scan the QR at your chosen location before its deadline, or pay the forfeit.</p>
           </div>
 
           <!-- The Minimalist Precision Instrument Card -->
@@ -389,10 +388,10 @@
                   <div class="verify-glyph-circle">📷</div>
                   <div class="verify-meta">
                     <div class="verify-headline">
-                      <strong>Kitchen QR Terminal</strong>
+                      <strong>Location QR Terminal</strong>
                       <span class="reliability-tag">100% Guaranteed</span>
                     </div>
-                    <small>Scan high-contrast physical code mounted on kettle or bathroom mirror</small>
+                    <small>Scan the physical QR code at your selected station, such as the library, gym, or lecture hall</small>
                   </div>
                 </label>
 
@@ -408,6 +407,38 @@
                   </div>
                 </label>
               </div>
+
+              <div class="qr-location-settings" id="qrLocationSettings">
+                <div class="qr-location-heading">
+                  <strong>QR station location and arrival time</strong>
+                  <span>QR codes are already placed at these locations.</span>
+                </div>
+                <div class="qr-location-grid">
+                  <label class="qr-setting-field qr-location-field">
+                    <span>Scan location</span>
+                    <select id="qrLocationSelect" aria-label="QR code scan location">
+                      <option value="kitchen">Home / Kitchen</option>
+                      <option value="library">Library</option>
+                      <option value="gym">Gym</option>
+                      <option value="lecture_hall">Lecture Hall</option>
+                      <option value="other">Other location</option>
+                    </select>
+                  </label>
+                  <label class="qr-setting-field hidden" id="qrCustomLocationField">
+                    <span>Location name</span>
+                    <input type="text" id="qrCustomLocation" maxlength="50" placeholder="Enter location name" aria-label="Other QR location name" required>
+                  </label>
+                  <label class="qr-setting-field">
+                    <span>Walk time (minutes)</span>
+                    <input type="number" id="qrTravelMinutes" min="0" max="120" step="1" value="0" aria-label="Estimated walk time to QR station">
+                  </label>
+                  <label class="qr-setting-field">
+                    <span>Scan deadline after alarm</span>
+                    <input type="number" id="qrDeadlineMinutes" min="1" max="180" value="5" readonly aria-label="QR scan deadline in minutes">
+                  </label>
+                </div>
+                <p class="qr-location-help">For off-site stations, the deadline is set to walk time plus a 30-minute buffer. Home keeps the 5-minute default.</p>
+              </div>
             </div>
 
             <!-- Primary Action Button -->
@@ -421,7 +452,7 @@
               </button>
 
               <div class="action-subtext">
-                <span>🔒 Smart escrow contract armed. 5-minute grace period applies upon morning alarm trigger.</span>
+                <span>🔒 Smart escrow contract armed. <span id="contractQrDeadline">5-minute scan deadline at Home / Kitchen.</span></span>
               </div>
             </div>
 
@@ -467,7 +498,7 @@
           <div class="simulator-trigger-bar">
             <button type="button" class="btn btn-emergency-minimal" id="triggerAlarmSimBtn">
               <span class="urgent-beacon"></span>
-              <span class="sim-btn-text">⚡ Test Morning Wake-Up Simulation (Experience the 5-Min Grace Countdown)</span>
+              <span class="sim-btn-text">⚡ Test Morning Wake-Up Simulation (Experience Your Disarm Deadline)</span>
             </button>
             <button type="button" class="hidden" id="previewLaunchSimBtn"></button>
           </div>
@@ -485,7 +516,7 @@
             <div class="protocol-item">
               <span class="p-num">2</span>
               <div class="p-text">
-                <strong>5-Min Grace</strong>
+                <strong>QR Scan Deadline</strong>
                 <small>Clock ticks down</small>
               </div>
             </div>
@@ -493,7 +524,7 @@
             <div class="protocol-item">
               <span class="p-num">3</span>
               <div class="p-text">
-                <strong>Scan Kettle QR</strong>
+                <strong>Scan Selected QR</strong>
                 <small>Release £10 or forfeit</small>
               </div>
             </div>
@@ -892,7 +923,7 @@
       <div class="alarm-digital-clock" id="activeClockTime">07:30:00</div>
 
       <div class="countdown-hero-card">
-        <div class="countdown-title">5-MINUTE GRACE CLOCK TICKING — CAPITAL AT RISK</div>
+        <div class="countdown-title" id="countdownTitle">5-MINUTE QR SCAN DEADLINE</div>
 
         <div class="at-risk-money-row">
           <span class="at-risk-currency">£</span>
@@ -900,8 +931,8 @@
         </div>
 
         <div class="timer-digits-box">
-          <div class="digits" id="graceTimerDigits">04:59</div>
-          <div class="subtext">BEFORE AUTOMATIC FORFEIT WIRE TRANSFER</div>
+          <div class="digits" id="graceTimerDigits">05:00</div>
+          <div class="subtext" id="graceDeadlineLabel">BEFORE AUTOMATIC FORFEIT · HOME / KITCHEN</div>
         </div>
 
         <div class="grace-progress-track">
@@ -909,7 +940,7 @@
         </div>
 
         <div class="forfeit-warning-box" id="activeTargetWarning">
-          ⚠️ If timer expires or you snooze, £10.00 transfers immediately to:
+          ⚠️ Scan the QR at <strong id="activeQrLocation">Home / Kitchen</strong> before the timer expires, or snoozing forfeits £10.00 to:
           <strong id="activeBeneficiaryName">Flatmate Jamie (@jamie_flat4) via Monzo</strong>
         </div>
       </div>
@@ -960,7 +991,7 @@
       </div>
 
       <div class="verify-mode-tabs">
-        <button class="verify-tab active" id="modeQrTab">📷 Kitchen QR Terminal</button>
+        <button class="verify-tab active" id="modeQrTab">📷 Home / Kitchen QR Terminal</button>
         <button class="verify-tab" id="modePhotoTab">☕ Kettle / Sink Photo AI</button>
       </div>
 
@@ -980,14 +1011,14 @@
 
           <div class="viewfinder-placeholder" id="viewfinderPlaceholder">
             <div class="placeholder-icon">📷</div>
-            <div class="placeholder-text">Align Kitchen QR Code Inside Box</div>
-            <div class="placeholder-status" id="qrScannerStatus">Ready to scan terminal</div>
+            <div class="placeholder-text" id="qrPlaceholderText">Align Home / Kitchen QR Code Inside Box</div>
+            <div class="placeholder-status" id="qrScannerStatus">Ready to scan at Home / Kitchen</div>
           </div>
         </div>
 
         <div class="scanner-btn-group">
           <button class="btn btn-primary btn-block" id="simulateQrScanSuccessBtn">
-            ⚡ Scan Kettle QR Terminal Now (Verify & Disarm)
+            ⚡ Scan Home / Kitchen QR Terminal Now (Verify & Disarm)
           </button>
           <button class="btn btn-secondary btn-sm btn-block" id="toggleWebcamBtn">
             Enable Physical Webcam
