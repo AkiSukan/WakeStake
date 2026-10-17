@@ -27,7 +27,9 @@
       qrCustomLocation: '',
       qrTravelMinutes: 0,
       qrDeadlineMinutes: 5,
-      isActive: true
+      isActive: false,
+      scheduledTime: null,
+      nextTriggerAt: null
     },
     userStats: {
       totalProtected: 140.00,
@@ -69,8 +71,15 @@
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const savedState = JSON.parse(saved);
+        const alarm = Object.assign({}, defaultState.alarm, savedState.alarm || {});
+        const hasValidSchedule = alarm.isActive && alarm.nextTriggerAt && Number.isFinite(Date.parse(alarm.nextTriggerAt));
+        if (!hasValidSchedule) {
+          alarm.isActive = false;
+          alarm.scheduledTime = null;
+          alarm.nextTriggerAt = null;
+        }
         return Object.assign({}, defaultState, savedState, {
-          alarm: Object.assign({}, defaultState.alarm, savedState.alarm || {})
+          alarm
         });
       }
     } catch (e) {
@@ -262,6 +271,9 @@
     navStreakBadge: document.getElementById('navStreakBadge'),
     navBeerBadge: document.getElementById('navBeerBadge'),
     deviceStatusTime: document.getElementById('deviceStatusTime'),
+    localClockTime: document.getElementById('localClockTime'),
+    alarmRuntimeStatus: document.getElementById('alarmRuntimeStatus'),
+    cancelAlarmBtn: document.getElementById('cancelAlarmBtn'),
 
     // Tab 1: Form
     alarmTimeInput: document.getElementById('alarmTimeInput'),
@@ -391,6 +403,7 @@
   let graceCountdownSecs = 300; // 5 minutes (300 seconds)
   let graceInterval = null;
   let emergencyClockInterval = null;
+  let alarmClockInterval = null;
   let webcamStream = null;
   let qrScanTimer = null;
   let qrScanner = null;
@@ -431,6 +444,7 @@
     updateThreatPreview();
     updateSleepDurationTag();
     updateDeviceClock();
+    updateAlarmClockUi();
     renderStats();
     renderCalendar();
     renderAuditLedger();
@@ -439,7 +453,7 @@
     renderFlatActivity();
     renderKitchenQrCode();
     bindEvents();
-    startHeaderClock();
+    startAlarmClock();
   }
 
   function renderFormFromState() {
@@ -527,14 +541,20 @@
   function updateThreatPreview() {
     const stake = state.alarm.stake;
     const formattedStake = `£${stake.toFixed(2)}`;
+    const configuredTarget = state.alarm.isActive
+      ? new Date(state.alarm.nextTriggerAt)
+      : getNextAlarmDate();
+    const alarmTimeLabel = configuredTarget && Number.isFinite(configuredTarget.getTime())
+      ? formatAlarmTime(configuredTarget)
+      : state.alarm.time;
     
     // Header pill
     if (DOM.headerPillText) {
-      DOM.headerPillText.innerHTML = `Next: <strong>${state.alarm.time} AM</strong> (${formattedStake} Staked)`;
+      DOM.headerPillText.innerHTML = `${state.alarm.isActive ? 'Armed' : 'Alarm off'}: <strong>${alarmTimeLabel}</strong> (${formattedStake} Staked)`;
     }
 
     // Threat box & HUD
-    if (DOM.previewTime) DOM.previewTime.textContent = `${state.alarm.time} AM`;
+    if (DOM.previewTime) DOM.previewTime.textContent = alarmTimeLabel;
     if (DOM.previewStake) DOM.previewStake.textContent = formattedStake;
     if (DOM.previewVerify) {
       DOM.previewVerify.textContent = state.alarm.verifyMethod === 'qr'
@@ -649,16 +669,12 @@
 
   function updateSleepDurationTag() {
     if (!DOM.sleepDurationTag || !state.alarm.time) return;
-    
-    const [alarmHrs, alarmMins] = state.alarm.time.split(':').map(Number);
     const now = new Date();
-    const alarmDate = new Date();
-    alarmDate.setHours(alarmHrs, alarmMins, 0, 0);
-
-    // If alarm is earlier than now, it's for tomorrow
-    if (alarmDate <= now) {
-      alarmDate.setDate(alarmDate.getDate() + 1);
-    }
+    const savedDate = state.alarm.isActive ? new Date(state.alarm.nextTriggerAt) : null;
+    const alarmDate = savedDate && Number.isFinite(savedDate.getTime())
+      ? savedDate
+      : getNextAlarmDate(now);
+    if (!alarmDate) return;
 
     const diffMs = alarmDate - now;
     const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
@@ -693,6 +709,7 @@
 
     updateThreatPreview();
     updateSleepDurationTag();
+    updateAlarmClockUi();
   }
 
   function setStakeAmount(amount) {
@@ -716,6 +733,137 @@
     const hrs = String(now.getHours()).padStart(2, '0');
     const mins = String(now.getMinutes()).padStart(2, '0');
     DOM.deviceStatusTime.textContent = `${hrs}:${mins}`;
+  }
+
+  function getNextAlarmDate(reference = new Date(), alarmTime = state.alarm.time) {
+    if (!/^\d{2}:\d{2}$/.test(alarmTime || '')) return null;
+    const [hours, minutes] = alarmTime.split(':').map(Number);
+    if (hours > 23 || minutes > 59) return null;
+
+    const next = new Date(reference);
+    next.setHours(hours, minutes, 0, 0);
+    if (next <= reference) next.setDate(next.getDate() + 1);
+    return next;
+  }
+
+  function getAlarmDateLabel(date, reference = new Date()) {
+    const dateKey = value => `${value.getFullYear()}-${value.getMonth()}-${value.getDate()}`;
+    if (dateKey(date) === dateKey(reference)) return 'today';
+    const tomorrow = new Date(reference);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    if (dateKey(date) === dateKey(tomorrow)) return 'tomorrow';
+    return date.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' });
+  }
+
+  function formatAlarmTime(date) {
+    return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  }
+
+  function updateAlarmClockUi(now = new Date()) {
+    if (DOM.localClockTime) {
+      DOM.localClockTime.textContent = now.toLocaleTimeString([], {
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
+      });
+      DOM.localClockTime.dateTime = now.toISOString();
+    }
+
+    const savedTarget = state.alarm.isActive ? new Date(state.alarm.nextTriggerAt) : null;
+    const target = savedTarget && Number.isFinite(savedTarget.getTime())
+      ? savedTarget
+      : getNextAlarmDate(now);
+
+    if (DOM.timePeriodTag && target) {
+      DOM.timePeriodTag.textContent = getAlarmDateLabel(target, now);
+    }
+
+    if (DOM.cancelAlarmBtn) DOM.cancelAlarmBtn.classList.toggle('hidden', !state.alarm.isActive);
+    if (!DOM.alarmRuntimeStatus) return;
+
+    if (DOM.alarmModal.classList.contains('active')) {
+      DOM.alarmRuntimeStatus.textContent = 'Alarm is ringing now.';
+    } else if (!state.alarm.isActive || !target) {
+      DOM.alarmRuntimeStatus.textContent = 'Alarm is off. Set a time and save to arm it.';
+    } else {
+      const targetDescription = `${getAlarmDateLabel(target, now)} at ${formatAlarmTime(target)}`;
+      const timeChanged = state.alarm.scheduledTime && state.alarm.scheduledTime !== state.alarm.time;
+      DOM.alarmRuntimeStatus.textContent = timeChanged
+        ? `Time changed. Save to update the alarm. It is still armed for ${targetDescription}. Keep this page open.`
+        : `Armed for ${targetDescription}. Repeats daily. Keep this page open; background browsers may delay it.`;
+    }
+
+    if (DOM.saveBtnText) {
+      const stake = `£${state.alarm.stake.toFixed(2)}`;
+      DOM.saveBtnText.textContent = state.alarm.isActive
+        ? `UPDATE ALARM & STAKE (${stake})`
+        : `SET REAL ALARM & STAKE (${stake})`;
+    }
+  }
+
+  function checkScheduledAlarm(now = new Date()) {
+    updateDeviceClock();
+    updateAlarmClockUi(now);
+    updateSleepDurationTag();
+
+    if (!state.alarm.isActive || !state.alarm.nextTriggerAt) return;
+    const scheduledAt = new Date(state.alarm.nextTriggerAt);
+    if (!Number.isFinite(scheduledAt.getTime()) || now < scheduledAt) return;
+
+    const nextAlarm = getNextAlarmDate(now, state.alarm.scheduledTime || state.alarm.time);
+    if (!nextAlarm) {
+      state.alarm.isActive = false;
+      state.alarm.scheduledTime = null;
+      state.alarm.nextTriggerAt = null;
+      saveState();
+      updateAlarmClockUi(now);
+      return;
+    }
+
+    state.alarm.lastTriggeredAt = scheduledAt.toISOString();
+    state.alarm.nextTriggerAt = nextAlarm.toISOString();
+    saveState();
+    updateAlarmClockUi(now);
+    if (!DOM.alarmModal.classList.contains('active')) launchEmergencySimulator();
+  }
+
+  function startAlarmClock() {
+    if (alarmClockInterval) clearInterval(alarmClockInterval);
+    checkScheduledAlarm();
+    alarmClockInterval = setInterval(() => checkScheduledAlarm(), 1000);
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) checkScheduledAlarm();
+    });
+    window.addEventListener('focus', () => checkScheduledAlarm());
+  }
+
+  function armRealAlarm() {
+    const nextAlarm = getNextAlarmDate();
+    if (!nextAlarm) {
+      DOM.alarmTimeInput.reportValidity();
+      return;
+    }
+
+    state.alarm.isActive = true;
+    state.alarm.scheduledTime = state.alarm.time;
+    state.alarm.nextTriggerAt = nextAlarm.toISOString();
+    saveState();
+    try {
+      sound.init();
+    } catch (error) {
+      console.warn('Alarm sound could not be initialized:', error);
+    }
+    updateAlarmClockUi();
+    updateThreatPreview();
+    showToast(`Alarm armed for ${getAlarmDateLabel(nextAlarm)} at ${formatAlarmTime(nextAlarm)}. Keep this page open.`, 'toast-success');
+  }
+
+  function cancelRealAlarm() {
+    state.alarm.isActive = false;
+    state.alarm.scheduledTime = null;
+    state.alarm.nextTriggerAt = null;
+    saveState();
+    updateAlarmClockUi();
+    updateThreatPreview();
+    showToast('Real alarm turned off.', 'toast-info');
   }
 
   // =========================================================================
@@ -897,6 +1045,7 @@
     // Show modal takeover
     DOM.alarmModal.classList.add('active');
     DOM.alarmModal.setAttribute('aria-hidden', 'false');
+    updateAlarmClockUi();
 
     // Start Alarm Siren Sound Loop
     sound.startAlarmLoop();
@@ -960,6 +1109,7 @@
     sound.stopAlarmLoop();
     DOM.alarmModal.classList.remove('active');
     DOM.alarmModal.setAttribute('aria-hidden', 'true');
+    updateAlarmClockUi();
   }
 
   // =========================================================================
@@ -1362,17 +1512,6 @@
     });
   }
 
-  function startHeaderClock() {
-    setInterval(() => {
-      const now = new Date();
-      if (DOM.timePeriodTag) {
-        DOM.timePeriodTag.textContent = (now.getHours() >= 12) ? 'Tomorrow Morning' : 'Today';
-      }
-      updateSleepDurationTag();
-      updateDeviceClock();
-    }, 30000);
-  }
-
   // =========================================================================
   // 12. TOAST NOTIFICATION ENGINE
   // =========================================================================
@@ -1450,6 +1589,7 @@
         state.alarm.time = timeVal;
         updateThreatPreview();
         updateSleepDurationTag();
+        updateAlarmClockUi();
       });
     });
 
@@ -1457,6 +1597,7 @@
       state.alarm.time = e.target.value;
       updateThreatPreview();
       updateSleepDurationTag();
+      updateAlarmClockUi();
     });
 
     DOM.alarmLabelInput.addEventListener('input', (e) => {
@@ -1564,6 +1705,8 @@
 
     // Save Alarm Button
     DOM.saveAlarmBtn.addEventListener('click', () => {
+      state.alarm.time = DOM.alarmTimeInput.value;
+      if (!DOM.alarmTimeInput.reportValidity()) return;
       if (state.alarm.verifyMethod === 'qr' && state.alarm.qrLocation === 'other' && !DOM.qrCustomLocation.value.trim()) {
         DOM.qrCustomLocationField.classList.remove('hidden');
         DOM.qrCustomLocation.reportValidity();
@@ -1579,10 +1722,9 @@
           return;
         }
       }
-      saveState();
-      sound.init();
-      showToast(`🔒 Contract locked! £${state.alarm.stake.toFixed(2)} staked for ${state.alarm.time} AM.`, 'toast-success');
+      armRealAlarm();
     });
+    if (DOM.cancelAlarmBtn) DOM.cancelAlarmBtn.addEventListener('click', cancelRealAlarm);
 
     // Emergency Alarm Simulator Triggers
     DOM.triggerAlarmSimBtn.addEventListener('click', launchEmergencySimulator);

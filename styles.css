@@ -734,6 +734,41 @@ body.mode-mobile-frame #mainContainer {
   padding: 16px 20px;
 }
 
+.alarm-runtime-readout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 14px;
+  margin: 10px 4px 0;
+  color: #8C9BB4;
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.alarm-runtime-clock {
+  white-space: nowrap;
+}
+
+.alarm-runtime-clock time {
+  margin-left: 4px;
+  color: var(--emerald-safe);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.alarm-runtime-message {
+  flex: 1 1 260px;
+  min-width: 0;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+#cancelAlarmBtn {
+  margin-top: 10px;
+}
+
 .time-digits-wrap {
   display: flex;
   align-items: center;
@@ -3340,6 +3375,16 @@ body.theme-light .qr-scanner-status {
 
 /* Keep the simulated handset and its contents within narrow viewports. */
 @media (max-width: 480px) {
+  .alarm-runtime-readout {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .alarm-runtime-message {
+    flex-basis: auto;
+    text-align: left;
+  }
+
   .qr-location-grid {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -3477,6 +3522,16 @@ body.mode-mobile-frame .time-clock-icon {
 body.mode-mobile-frame .period-pill {
   max-width: 100%;
   white-space: normal;
+}
+
+body.mode-mobile-frame .alarm-runtime-readout {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+body.mode-mobile-frame .alarm-runtime-message {
+  flex-basis: auto;
+  text-align: left;
 }
 
 body.mode-mobile-frame .time-controls-cluster {
@@ -3680,6 +3735,10 @@ body.theme-light :is(input, select, textarea, .time-instrument-box, .mission-inp
 
 body.theme-light :is(input, select, textarea)::placeholder {
   color: #64748B;
+}
+
+body.theme-light .alarm-runtime-readout {
+  color: #526176;
 }
 
 body.theme-light :is(.hero-headline, .brand-title, .section-headline, .card-title, .metric-value, .tier-name, .row-label, .verify-headline strong, .member-name, .audit-table th) {

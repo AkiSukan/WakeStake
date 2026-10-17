@@ -242,6 +242,11 @@
                 </div>
               </div>
 
+              <div class="alarm-runtime-readout" role="status" aria-live="polite">
+                <span class="alarm-runtime-clock">Local time <time id="localClockTime">--:--:--</time></span>
+                <span class="alarm-runtime-message" id="alarmRuntimeStatus">Alarm is off. Set a time and save to arm it.</span>
+              </div>
+
               <div class="mission-input-wrap">
                 <div class="mission-input-inner">
                   <span class="mission-icon">🎯</span>
@@ -448,12 +453,13 @@
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                   <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                 </svg>
-                <span id="saveBtnText">LOCK IN STAKE (£10.00 COMMITTED)</span>
+                <span id="saveBtnText">SET REAL ALARM &amp; STAKE (£10.00)</span>
               </button>
 
               <div class="action-subtext">
-                <span>🔒 Smart escrow contract armed. <span id="contractQrDeadline">5-minute scan deadline at Home / Kitchen.</span></span>
+                <span>Save to arm the daily alarm. Keep this page open; background browsers may delay it. <span id="contractQrDeadline">5-minute scan deadline at Home / Kitchen.</span></span>
               </div>
+              <button type="button" class="btn btn-secondary btn-block hidden" id="cancelAlarmBtn">Turn Off Alarm</button>
             </div>
 
           </div>
